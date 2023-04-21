@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/OutfitOrbit/static/css/main.78defa2a.css",
+    "main.js": "/OutfitOrbit/static/js/main.9d427905.js",
+    "static/media/gang.png": "/OutfitOrbit/static/media/gang.ce0adc65e34c180c89c0.png",
+    "static/media/My project.png": "/OutfitOrbit/static/media/My project.ec0ea3815f4cc46fc10f.png",
+    "index.html": "/OutfitOrbit/index.html",
+    "main.78defa2a.css.map": "/OutfitOrbit/static/css/main.78defa2a.css.map",
+    "main.9d427905.js.map": "/OutfitOrbit/static/js/main.9d427905.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.78defa2a.css",
+    "static/js/main.9d427905.js"
+  ]
+}
