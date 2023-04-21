@@ -1,4 +1,2 @@
+src/frontend/private
 node_modules
-build
-public
-.env

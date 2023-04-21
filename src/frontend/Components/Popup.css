@@ -6,7 +6,6 @@
     --navbar-color: #FFEECA;
     --bg-color: #1D3C6A;
     --instructions-color: #1D3C6A;
-    --about-image: url("/Users/javier/Library/Mobile Documents/com~apple~CloudDocs/Coding/Hack@Brown/scareBears/scare-the-bears/src/media/gang.png");
   }
   
   * {
@@ -76,5 +75,4 @@
         flex-basis: 35%;
         width: 20vw;
         height: 50vh;
-        background-image: var(--about-image);
       }
