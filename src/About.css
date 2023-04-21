@@ -1,0 +1,42 @@
+:root { 
+    --navbar-height: 58px;
+    --navbar-color: #FFEECA;
+    --bg-color: #542C19;
+  }
+  
+* {
+    box-sizing: border-box;
+    font-family: 'Permanent Marker', cursive;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    scrollbar-width: none; /* hide scrollbar for firefox */
+    -ms-overflow-style: none; /* hide scrollbar for microsoft edge */
+    background-color: #542C19;
+}
+
+
+/* Hide scrollbars but keep functionality: Chrome, Safari, Opera */
+body::-webkit-scrollbar {
+    display: none; 
+}
+  
+.grid-container {
+    display: grid;
+    grid-template-areas: 
+    "about"
+    "instructions";
+    grid-template-columns: 1fr;
+  }
+  
+.navbar-container {
+    z-index: 10;
+    grid-area: navbar;
+    top: 0;
+    position: sticky;
+    background-color: var(--bg-color);
+  }
+
+  
