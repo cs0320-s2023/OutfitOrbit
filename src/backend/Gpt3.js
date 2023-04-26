@@ -1,9 +1,8 @@
 import { Configuration, OpenAIApi } from "openai";
+import OPEN_API_KEY from "./private/token.tsx";
 
 const configuration = new Configuration({
-  // organization: "org-LQVLH1b61EYKODcqmDTTcwNk",
-  // apiKey: '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',
-  apiKey: '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'
+  apiKey: OPEN_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);

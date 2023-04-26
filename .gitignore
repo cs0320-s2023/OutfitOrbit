@@ -1,2 +1,2 @@
-src/frontend/private
 node_modules
+src/backend/private/
