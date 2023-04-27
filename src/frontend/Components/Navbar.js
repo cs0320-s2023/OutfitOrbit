@@ -43,26 +43,44 @@ function Navbar( props ) {
         document.getElementById(id).scrollIntoView({behavior: "smooth"});
     }
 
+      function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log("Name: " + profile.getName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+      }
+
     return (
-        <nav className="navbar">
-            <div id="navbar" className="brand-title">Outfit Orbit</div>
-                <a  
-                    className="toggle-button" 
-                    onClick={() => {
-                    navbarLinks[0].classList.toggle('active');
-                }}>
-                <span className="bar"></span>
-                <span className="bar"></span>
-                <span className="bar"></span>
-                </a>
-            <div className="navbar-links">
-                <ul className="navbar-links-list">
-                    {/* <li><a onClick={smoothScroll("navbar")}>Home</a></li> */}
-                    <li><a onClick={popUpInstructions}>Instructions</a></li>
-                    <li><a onClick={popUpAbout}>About</a></li> 
-                </ul>
+      <nav className="navbar">
+        <div id="navbar" className="brand-title">
+          Outfit Orbit
+        </div>
+        <a
+          className="toggle-button"
+          onClick={() => {
+            navbarLinks[0].classList.toggle("active");
+          }}
+        >
+          <span className="bar"></span>
+          <span className="bar"></span>
+          <span className="bar"></span>
+        </a>
+        <div className="navbar-links">
+          <ul className="navbar-links-list">
+            {/* <li><a onClick={smoothScroll("navbar")}>Home</a></li> */}
+            <li>
+              <a onClick={popUpInstructions}>Instructions</a>
+            </li>
+            <li>
+              <a onClick={popUpAbout}>About</a>
+            </li>
+            <div className="g-signin2" data-onsuccess={onSignIn}>
+              Sign In
             </div>
-        </nav>
+          </ul>
+        </div>
+      </nav>
     );
 }
 
