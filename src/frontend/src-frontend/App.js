@@ -5,7 +5,31 @@ import Popup from '../Components/Popup'
 import "./App.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAGcexpIxc-TsCz_XHeMO6tBAEUzRO0MbU",
+  authDomain: "outfitorbit.firebaseapp.com",
+  projectId: "outfitorbit",
+  storageBucket: "outfitorbit.appspot.com",
+  messagingSenderId: "826449206136",
+  appId: "1:826449206136:web:e069a08e04f1f4c563868d",
+  measurementId: "G-9BXSQBE0QQ"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+// Initialize Firebase Authentication and get a reference to the service
+const auth = getAuth(app);
 
 function App() {
 
