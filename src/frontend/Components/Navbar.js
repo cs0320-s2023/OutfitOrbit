@@ -27,6 +27,7 @@ function Navbar( props ) {
     }
 
     function handleSignOut(event) {
+      console.log("signing out")
       setCurrentUser({});
       document.getElementById("signInDiv").hidden = false;
     }
@@ -76,13 +77,13 @@ function Navbar( props ) {
         document.getElementById(id).scrollIntoView({behavior: "smooth"});
     }
 
-      function onSignIn(googleUser) {
-        var profile = googleUser.getBasicProfile();
-        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log("Name: " + profile.getName());
-        console.log("Image URL: " + profile.getImageUrl());
-        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-      }
+    function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log("Name: " + profile.getName());
+      console.log("Image URL: " + profile.getImageUrl());
+      console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+    }
 
     return (
       <nav className="navbar">
@@ -108,8 +109,12 @@ function Navbar( props ) {
             <li>
               <a onClick={popUpAbout}>About</a>
             </li>
+            {Object.keys(currentUser).length != 0 &&
+              <li>
+                <a><button id="signOutButton" onClick={(e) => handleSignOut(e)}>Sign Out</button></a>
+              </li>
+            }
             <div id='signInDiv'>
-              <a><button onClick={(e) => handleSignOut(e)}>Sign Out</button></a>
             </div> 
           </ul>
         </div>

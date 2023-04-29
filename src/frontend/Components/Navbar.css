@@ -39,7 +39,6 @@ body {
 
 .navbar-links a {
     text-decoration: none;
-    color: #FFEECA;
     padding: 1rem;
     display: block;
     color: var(--navy-blue)
@@ -76,6 +75,15 @@ body {
     cursor: pointer;
 }
 
+#signOutButton {
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: var(--navy-blue);
+    font-size: 28px;
+}
+
 .toggle-button {
     position: absolute;
     top: 1.1rem;
@@ -110,7 +118,7 @@ body {
     }
 
     .navbar ul {
-        width: 100vw;;
+        width: 100vw;
         flex-direction: column;
     }
 
@@ -130,7 +138,7 @@ body {
 /* Animation */
 @keyframes navbarChangeBackground {
     from { background-color: rgba(22, 14, 7, 0); }
-    to { background-color: var(--navbar-color);}
+    to { background-color: var(--navbar-color); }
 
 }
 
