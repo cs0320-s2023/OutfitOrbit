@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState }from 'react';
 import ReactDOM from 'react-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
+import jwt_decode from "jwt-decode";
 import './Navbar.css'
-import CLIENT_ID from '../../backend/private/auth.tsx';
+import CLIENT_ID from '../../backend/private/auth';
 
 /* Global google */
 
 function Navbar( props ) {
+    const [user, setUser] = useState({}); // TODO: change for firebase database
     const navElem = document.getElementsByClassName("navbar");
     const navbarLinks = document.getElementsByClassName("navbar-links");
     const navbarLinksList = document.getElementsByTagName("li")
@@ -18,7 +20,8 @@ function Navbar( props ) {
     window.addEventListener("scroll", animateNavbar);
 
     function handleAuthRes(res) {
-      console.log("Encoded JWT ID token:" + res.credential)
+      let userObject = jwt_decode(res.credential);
+      console.log(userObject);
     }
 
     useEffect(() => {
