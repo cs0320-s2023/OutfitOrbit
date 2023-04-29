@@ -5,10 +5,10 @@ import Popup from '../Components/Popup'
 import "./App.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
-
-// Import the functions you need from the SDKs you need
-import firebase from 'firebase/compat/app';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,11 +21,14 @@ const firebaseConfig = {
   storageBucket: "outfitorbit.appspot.com",
   messagingSenderId: "826449206136",
   appId: "1:826449206136:web:e069a08e04f1f4c563868d",
-  measurementId: "G-9BXSQBE0QQ"
+  measurementId: "G-9BXSQBE0QQ",
+  databaseURL: "https://outfit-orbit-default-rtdb.firebaseio.com"
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const database = getDatabase(app);
 
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);

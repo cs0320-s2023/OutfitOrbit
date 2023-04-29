@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
 import './Navbar.css'
-import CLIENT_ID from '../../backend/private/auth.tsx';
+import CLIENT_ID from '../private/auth';
+import { OAuth2Client } from "google-auth-library";
 
 /* Global google */
 
-function Navbar( props ) {
+function Navbar( props : any ) {
     const navElem = document.getElementsByClassName("navbar");
     const navbarLinks = document.getElementsByClassName("navbar-links");
     const navbarLinksList = document.getElementsByTagName("li")
@@ -17,8 +18,8 @@ function Navbar( props ) {
     // listen for scrolling events
     window.addEventListener("scroll", animateNavbar);
 
-    function handleAuthRes(res) {
-      console.log("Encoded JWT ID token:" + res.credential)
+    function handleAuthRes(res : OAuth2Client) {
+      console.log("Encoded JWT ID token:" + res.credentials)
     }
 
     useEffect(() => {
