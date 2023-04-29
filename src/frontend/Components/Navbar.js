@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 import './Navbar.css'
+import CLIENT_ID from '../../backend/private/auth.tsx';
+
+/* Global google */
 
 function Navbar( props ) {
     const navElem = document.getElementsByClassName("navbar");
@@ -10,6 +16,23 @@ function Navbar( props ) {
 
     // listen for scrolling events
     window.addEventListener("scroll", animateNavbar);
+
+    function handleAuthRes(res) {
+      console.log("Encoded JWT ID token:" + res.credential)
+    }
+
+    useEffect(() => {
+      /* global google */
+      google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleAuthRes,
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById("signInDiv"),
+        {theme: 'outline', size: 'large'}
+      )
+    }, []);
 
     function animateNavbar() {
 
@@ -43,26 +66,46 @@ function Navbar( props ) {
         document.getElementById(id).scrollIntoView({behavior: "smooth"});
     }
 
+      function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log("Name: " + profile.getName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+      }
+
     return (
-        <nav className="navbar">
-            <div id="navbar" className="brand-title">Outfit Orbit</div>
-                <a  
-                    className="toggle-button" 
-                    onClick={() => {
-                    navbarLinks[0].classList.toggle('active');
-                }}>
-                <span className="bar"></span>
-                <span className="bar"></span>
-                <span className="bar"></span>
-                </a>
-            <div className="navbar-links">
-                <ul className="navbar-links-list">
-                    {/* <li><a onClick={smoothScroll("navbar")}>Home</a></li> */}
-                    <li><a onClick={popUpInstructions}>Instructions</a></li>
-                    <li><a onClick={popUpAbout}>About</a></li> 
-                </ul>
-            </div>
-        </nav>
+      <nav className="navbar">
+        <div id="navbar" className="brand-title">
+          Outfit Orbit
+        </div>
+        <a
+          className="toggle-button"
+          onClick={() => {
+            navbarLinks[0].classList.toggle("active");
+          }}
+        >
+          <span className="bar"></span>
+          <span className="bar"></span>
+          <span className="bar"></span>
+        </a>
+        <div className="navbar-links">
+          <ul className="navbar-links-list">
+            {/* <li><a onClick={smoothScroll("navbar")}>Home</a></li> */}
+            <li>
+              <a onClick={popUpInstructions}>Instructions</a>
+            </li>
+            <li>
+              <a onClick={popUpAbout}>About</a>
+            </li>
+            <div id='signInDiv'>
+              <li>
+                <a> Sign in</a>
+              </li>
+            </div> 
+          </ul>
+        </div>
+      </nav>
     );
 }
 
