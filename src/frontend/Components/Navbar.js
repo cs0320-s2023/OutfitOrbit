@@ -30,7 +30,7 @@ function Navbar( props ) {
 
       google.accounts.id.renderButton(
         document.getElementById("signInDiv"),
-        {theme: 'outline', size: 'large'}
+        {theme: 'outline', size: 'Large'}
       )
     }, []);
 
@@ -99,9 +99,6 @@ function Navbar( props ) {
               <a onClick={popUpAbout}>About</a>
             </li>
             <div id='signInDiv'>
-              <li>
-                <a> Sign in</a>
-              </li>
             </div> 
           </ul>
         </div>
