@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 import './Navbar.css'
+import CLIENT_ID from '../../backend/private/auth.tsx';
+
+/* Global google */
 
 function Navbar( props ) {
     const navElem = document.getElementsByClassName("navbar");
@@ -10,6 +16,23 @@ function Navbar( props ) {
 
     // listen for scrolling events
     window.addEventListener("scroll", animateNavbar);
+
+    function handleAuthRes(res) {
+      console.log("Encoded JWT ID token:" + res.credential)
+    }
+
+    useEffect(() => {
+      /* global google */
+      google.accounts.id.initialize({
+        client_id: CLIENT_ID,
+        callback: handleAuthRes,
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById("signInDiv"),
+        {theme: 'outline', size: 'Large'}
+      )
+    }, []);
 
     function animateNavbar() {
 
@@ -75,9 +98,8 @@ function Navbar( props ) {
             <li>
               <a onClick={popUpAbout}>About</a>
             </li>
-            <div className="g-signin2" data-onsuccess={onSignIn}>
-              Sign In
-            </div>
+            <div id='signInDiv'>
+            </div> 
           </ul>
         </div>
       </nav>

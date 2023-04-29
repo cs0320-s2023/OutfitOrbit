@@ -1,5 +1,5 @@
 import Navbar from '../Components/Navbar';
-import Main from "/Users/Taleena/Desktop/cs32/OutfitOrbit/src/backend/Main.js";
+import Main from "/Users/javier/IdeaProjects/CSCI0320/OutfitOrbit/src/backend/Main.js";
 import { useState } from 'react';
 import Popup from '../Components/Popup'
 import "./App.css"
@@ -38,7 +38,7 @@ function App() {
   const [instructionsVisibility, setInstructionsVisibility] = useState(false);
   const [aboutVisibility, setAboutVisibility] = useState(false);
 
-  const backgroundImg = require("/Users/Taleena/Desktop/cs32/OutfitOrbit/src/frontend/media/homepage_background_2.png");
+  const backgroundImg = require("/Users/javier/IdeaProjects/CSCI0320/OutfitOrbit/src/frontend/media/homepage_background_2.png");
   const backgroundImgElem = document.getElementsByTagName('img'); // returns a collection
 
 
