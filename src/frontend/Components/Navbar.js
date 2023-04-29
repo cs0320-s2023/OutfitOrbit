@@ -4,12 +4,12 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GoogleLogin } from '@react-oauth/google';
 import jwt_decode from "jwt-decode";
 import './Navbar.css'
-import CLIENT_ID from '../../backend/private/auth';
+import CLIENT_ID from '../private/auth.tsx';
 
 /* Global google */
 
 function Navbar( props ) {
-    const [user, setUser] = useState({}); // TODO: change for firebase database
+    const [currentUser, setCurrentUser] = useState({}); // TODO: change for firebase database
     const navElem = document.getElementsByClassName("navbar");
     const navbarLinks = document.getElementsByClassName("navbar-links");
     const navbarLinksList = document.getElementsByTagName("li")
@@ -22,6 +22,13 @@ function Navbar( props ) {
     function handleAuthRes(res) {
       let userObject = jwt_decode(res.credential);
       console.log(userObject);
+      setCurrentUser(userObject); // sets the current user state to the user signed in
+      document.getElementById("signInDiv").hidden = true;
+    }
+
+    function handleSignOut(event) {
+      setCurrentUser({});
+      document.getElementById("signInDiv").hidden = false;
     }
 
     useEffect(() => {
@@ -102,6 +109,7 @@ function Navbar( props ) {
               <a onClick={popUpAbout}>About</a>
             </li>
             <div id='signInDiv'>
+              <a><button onClick={(e) => handleSignOut(e)}>Sign Out</button></a>
             </div> 
           </ul>
         </div>

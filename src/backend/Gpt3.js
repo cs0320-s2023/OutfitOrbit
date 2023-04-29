@@ -1,5 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
-import OPEN_API_KEY from "./private/token.js";
+import OPEN_API_KEY from "./private/token.tsx";
 
 const configuration = new Configuration({
   apiKey: OPEN_API_KEY,
