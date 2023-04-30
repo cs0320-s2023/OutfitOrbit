@@ -75,7 +75,6 @@ function App() {
             <div className="row">
               <div className="column">
                 <h2>
-                  {" "}
                   We are Outfit Orbit. Comitted to helping the environment by
                   taking your outfits to the next level.
                 </h2>
