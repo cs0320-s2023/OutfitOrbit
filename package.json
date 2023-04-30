@@ -18,6 +18,7 @@
     "firebase": "^9.21.0",
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
+    "google-auth-library": "^8.7.0",
     "jwt-decode": "^3.1.2",
     "openai": "^3.2.1",
     "react": "^18.2.0",
@@ -57,6 +58,19 @@
   "devDependencies": {
     "@babel/cli": "^7.20.7",
     "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2"
-  }
+    "@babel/preset-env": "^7.20.2",
+    "typescript": "^5.0.4"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cs0320-s2023/OutfitOrbit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cs0320-s2023/OutfitOrbit/issues"
+  },
+  "description": ""
 }

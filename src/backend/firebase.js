@@ -65,13 +65,12 @@ export const signOutGoogle = () => {
 
 /* Class to represent our database */
 export class WardrobeDB {
-  constructor (name, email, wardrobe) { //! wardrobe should represent a wardrobe object which we still have to make
+  constructor (name, email) { //! to add wardrobe component
       this.name = name;
       this.email = email;
-      this.wardrobe = wardrobe;
   }
   toString() {
-      return this.name + ', ' + this.email + ', ' + this.wardrobe;
+      return this.name + ', ' + this.email;
   }
 }
 
@@ -80,16 +79,15 @@ const wardrobeConverter = {
       return {
           name: wardrobeDB.name,
           email: wardrobeDB.email,
-          wardrobe: wardrobeDB.wardrobe
           };
   },
   fromFirestore: (snapshot, options) => {
       const data = snapshot.data(options);
-      return new WardrobeDB(data.name, data.email, data.wardrobe);
+      return new WardrobeDB(data.name, data.email);
   }
 };
 
-export async function createWardrobeDB(name, email, wardrobe) {
+export async function createWardrobeDB(name, email) {
   const ref = doc(db, "wardrobeDB", "wardrobe-db-test").withConverter(wardrobeConverter);
-  await setDoc(ref, new WardrobeDB(name, email, wardrobe));
+  await setDoc(ref, new WardrobeDB(name, email));
 }
