@@ -1,5 +1,5 @@
 import Navbar from '../Components/Navbar';
-import Main from "/Users/javier/IdeaProjects/CSCI0320/OutfitOrbit/src/backend/Main.js";
+import Main from "/Users/Taleena/Desktop/cs32/OutfitOrbit/src/backend/Main.js"
 import { useState } from 'react';
 import Popup from '../Components/Popup'
 import "./App.css"

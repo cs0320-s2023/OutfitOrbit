@@ -35,32 +35,32 @@ function Navbar( props : any ) {
     }
   }
 
-  useEffect(() => {
-    // let script = document.createElement("script");
-    // script.src = "https://apis.google.com/js/platform.js";
-    // script.onload = () => {
-    //   google.accounts.id.initialize({
-    //     client_id: CLIENT_ID,
-    //     callback: handleAuthRes,
-    //   });
+  // useEffect(() => {
+  //   // let script = document.createElement("script");
+  //   // script.src = "https://apis.google.com/js/platform.js";
+  //   // script.onload = () => {
+  //   //   google.accounts.id.initialize({
+  //   //     client_id: CLIENT_ID,
+  //   //     callback: handleAuthRes,
+  //   //   });
 
-    //   google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-    //     theme: "outline",
-    //     size: "Large",
-    //   });
-    // };
-    // document.body.appendChild(script);
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: CLIENT_ID,
-      callback: handleAuthRes,
-    });
+  //   //   google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+  //   //     theme: "outline",
+  //   //     size: "Large",
+  //   //   });
+  //   // };
+  //   // document.body.appendChild(script);
+  //   /* global google */
+  //   google.accounts.id.initialize({
+  //     client_id: CLIENT_ID,
+  //     callback: handleAuthRes,
+  //   });
 
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "Large",
-    });
-  }, []);
+  //   google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+  //     theme: "outline",
+  //     size: "Large",
+  //   });
+  // }, []);
 
   function animateNavbar() {
     let scrollPos =
