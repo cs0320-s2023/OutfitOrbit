@@ -91,3 +91,36 @@ export async function createWardrobeDB(name, email) {
   const ref = doc(db, "wardrobeDB", "wardrobe-db-test").withConverter(wardrobeConverter);
   await setDoc(ref, new WardrobeDB(name, email));
 }
+
+class Item {
+  constructor(name, color, season) {
+    this.name = name;
+    this.color = color;
+    this.season = season;
+  }
+}
+
+class Wardrobe {
+  constructor(clothes) {
+    this.clothes = clothes;
+  }
+
+  addItem(item) {
+    this.clothes.push(item);
+  }
+
+  removeItem(item) {
+    const index = this.clothes.indexOf(item);
+    if (index > -1) {
+      this.clothes.splice(index, 1);
+    }
+  }
+
+  findItemsByColor(color) {
+    return this.clothes.filter(item => item.color === color);
+  }
+
+  findItemsByName(name) {
+    return this.clothes.filter(item => item.color === color);
+  }
+}
