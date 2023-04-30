@@ -1,10 +1,9 @@
 import React, { useEffect, useState }from 'react';
 import ReactDOM from 'react-dom';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GoogleLogin } from '@react-oauth/google';
 import jwt_decode from "jwt-decode";
 import './Navbar.css'
 import CLIENT_ID from '../private/auth.tsx';
+import { signInWithGoogle } from '../../backend/firebase.js'
 
 /* Global google */
 
@@ -26,7 +25,7 @@ function Navbar( props ) {
       document.getElementById("signInDiv").hidden = true;
     }
 
-    function handleSignOut(event) {
+    function handleSignOut() {
       console.log("signing out")
       setCurrentUser({});
       document.getElementById("signInDiv").hidden = false;
@@ -41,8 +40,9 @@ function Navbar( props ) {
 
       google.accounts.id.renderButton(
         document.getElementById("signInDiv"),
-        {theme: 'outline', size: 'Large'}
-      )
+        {theme: 'outline', size: 'medium'}
+      );
+      google.accounts.id.prompt();
     }, []);
 
     function animateNavbar() {
@@ -77,14 +77,6 @@ function Navbar( props ) {
         document.getElementById(id).scrollIntoView({behavior: "smooth"});
     }
 
-    function onSignIn(googleUser) {
-      var profile = googleUser.getBasicProfile();
-      console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-      console.log("Name: " + profile.getName());
-      console.log("Image URL: " + profile.getImageUrl());
-      console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-    }
-
     return (
       <nav className="navbar">
         <div id="navbar" className="brand-title">
@@ -109,9 +101,10 @@ function Navbar( props ) {
             <li>
               <a onClick={popUpAbout}>About</a>
             </li>
-            {Object.keys(currentUser).length != 0 &&
+            {Object.keys(currentUser).length == 0 && // if not signed in currently
               <li>
-                <a><button id="signOutButton" onClick={(e) => handleSignOut(e)}>Sign Out</button></a>
+                {/* <a><button id="signOutButton" onClick={(e) => handleSignOut()}>Sign Out</button></a> */}
+                <a><button id="signInButton" onClick={signInWithGoogle}>Sign in</button></a>
               </li>
             }
             <div id='signInDiv'>
