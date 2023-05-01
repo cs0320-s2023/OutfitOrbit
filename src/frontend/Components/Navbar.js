@@ -48,14 +48,14 @@ function Navbar( props ) {
             for (let i = 0; i < navbarLinksList.length; i++) {
                 navbarLinksList[i].style.animation = "shiftNavbarBack 0.2s linear 1 forwards"
             }
-
+            
         } else if (scrollPos >= 35) {
             scrolledOnce = true;
             navElem[0].style.animation = "navbarChangeBackground 0.2s linear 1 forwards"
             for (let i = 0; i < navbarLinksList.length; i++) {
                 navbarLinksList[i].style.animation = "shiftNavbar 0.2s linear 1 forwards"
             }
-        } 
+        }
     }
 
     function popUpInstructions() {
