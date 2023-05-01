@@ -3,47 +3,40 @@ import ReactDOM from 'react-dom';
 import jwt_decode from "jwt-decode";
 import './Navbar.css'
 import CLIENT_ID from '../private/auth.tsx';
-import { signInWithGoogle } from '../../backend/firebase.js'
-
-/* Global google */
+import { signInWithGoogle, signOutGoogle, createWardrobeDB } from '../../backend/firebase.js'
 
 function Navbar( props ) {
     const [currentUser, setCurrentUser] = useState({}); // TODO: change for firebase database
+    const [isSignedIn, setSignedIn] = useState(false);
     const navElem = document.getElementsByClassName("navbar");
     const navbarLinks = document.getElementsByClassName("navbar-links");
     const navbarLinksList = document.getElementsByTagName("li")
 
     let scrolledOnce = false;
+    let username;
+    let userEmail;
 
     // listen for scrolling events
     window.addEventListener("scroll", animateNavbar);
 
-    function handleAuthRes(res) {
-      let userObject = jwt_decode(res.credential);
-      console.log(userObject);
-      setCurrentUser(userObject); // sets the current user state to the user signed in
-      document.getElementById("signInDiv").hidden = true;
+    function handleSignIn() {
+      if (!isSignedIn) {
+        signInWithGoogle();
+        username = localStorage.getItem('name');
+        userEmail = localStorage.getItem('email');
+        createWardrobeDB(username, userEmail, undefined);
+        setSignedIn(true);
+      } 
     }
 
     function handleSignOut() {
-      console.log("signing out")
-      setCurrentUser({});
-      document.getElementById("signInDiv").hidden = false;
+      if (isSignedIn) {
+        signOutGoogle();
+        localStorage.setItem("name", "");
+        localStorage.setItem("email", "");
+        setSignedIn(false);
+      } 
     }
-
-    useEffect(() => {
-      /* global google */
-      google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleAuthRes,
-      });
-
-      google.accounts.id.renderButton(
-        document.getElementById("signInDiv"),
-        {theme: 'outline', size: 'medium'}
-      );
-      google.accounts.id.prompt();
-    }, []);
 
     function animateNavbar() {
 
@@ -55,14 +48,14 @@ function Navbar( props ) {
             for (let i = 0; i < navbarLinksList.length; i++) {
                 navbarLinksList[i].style.animation = "shiftNavbarBack 0.2s linear 1 forwards"
             }
-
+            
         } else if (scrollPos >= 35) {
             scrolledOnce = true;
             navElem[0].style.animation = "navbarChangeBackground 0.2s linear 1 forwards"
             for (let i = 0; i < navbarLinksList.length; i++) {
                 navbarLinksList[i].style.animation = "shiftNavbar 0.2s linear 1 forwards"
             }
-        } 
+        }
     }
 
     function popUpInstructions() {
@@ -101,14 +94,14 @@ function Navbar( props ) {
             <li>
               <a onClick={popUpAbout}>About</a>
             </li>
-            {Object.keys(currentUser).length == 0 && // if not signed in currently
               <li>
-                {/* <a><button id="signOutButton" onClick={(e) => handleSignOut()}>Sign Out</button></a> */}
-                <a><button id="signInButton" onClick={signInWithGoogle}>Sign in</button></a>
+                {isSignedIn &&
+                  <a><button id="signOutButton" onClick={handleSignOut}>Sign out</button></a>
+                }
+                {!isSignedIn &&
+                  <a><button id="signInButton" onClick={handleSignIn}>Sign in</button></a>
+                }
               </li>
-            }
-            <div id='signInDiv'>
-            </div> 
           </ul>
         </div>
       </nav>
