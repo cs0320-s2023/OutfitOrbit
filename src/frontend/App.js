@@ -16,6 +16,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({}); // TODO: change for firebase database
   const [isSignedIn, setIsSignedIn] = useState(false);
 
+  // images
   const backgroundImg = require("../frontend/media/homepage_background_2.png");
   const backgroundImgElem = document.getElementsByTagName('img'); // returns a collection
 
