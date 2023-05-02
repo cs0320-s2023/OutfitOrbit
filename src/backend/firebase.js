@@ -5,6 +5,7 @@ import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
 import { doc, setDoc, addDoc, query, where} from "firebase/firestore"; 
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "./private/firebase.tsx"
+import { Clothing} from "./Clothing";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -45,11 +46,14 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
     const userData = {
       name: name,
       email: email,
+      wardrobe: [new Clothing("blue", "cotton", "shirt", "casual")],
     };
 
     localStorage.setItem("name", userData.name);
     localStorage.setItem("email", userData.email);
-    createWardrobeDB(userData.name, userData.email);
+    localStorage.setItem("wardrobe", userData.wardrobe); 
+    console.log(userData.wardrobe); 
+    createWardrobeDB(userData.name, userData.email, userData.wardrobe);
 
   }).catch((error) => {
     console.log(error)
@@ -76,29 +80,47 @@ export const signOutGoogle = () => {
 
 /* Class to represent our database */
 export class WardrobeDB {
-  constructor (name, email) { //! to add wardrobe component
-      this.name = name;
-      this.email = email;
+  constructor(name, email, wardrobe = []) {
+    //! to add wardrobe component
+    this.name = name;
+    this.email = email;
+    this.wardrobe = wardrobe;
   }
   toString() {
-      return this.name + ', ' + this.email;
+    return this.name + ", " + this.email;
   }
 }
 
 const wardrobeConverter = {
   toFirestore: (wardrobeDB) => {
-      return {
-          name: wardrobeDB.name,
-          email: wardrobeDB.email,
-          };
+        console.log(wardrobeDB.wardrobe);
+    const data = {
+      name: wardrobeDB.name,
+      email: wardrobeDB.email,
+      wardrobe: wardrobeDB.wardrobe
+        ? wardrobeDB.wardrobe.map((clothing) => clothing.toJSON())
+        : null,
+    };
+    // Remove any undefined values from the data object
+    return data;
   },
   fromFirestore: (snapshot, options) => {
-      const data = snapshot.data(options);
-      return new WardrobeDB(data.name, data.email);
-  }
+    const data = snapshot.data(options);
+    const wardrobe = data.wardrobe.map((clothing) => {
+      return new Clothing(
+        clothing.type,
+        clothing.tag,
+        clothing.size,
+        clothing.color
+      );
+    });
+    console.log(wardrobe)
+    return new WardrobeDB(data.name, data.email, wardrobe);
+  },
 };
 
-export async function createWardrobeDB(name, email) {
+export async function createWardrobeDB(name, email, wardrobe = []) {
+  console.log(wardrobe); 
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
   );
@@ -108,19 +130,14 @@ export async function createWardrobeDB(name, email) {
   );
 
   if (querySnapshot.empty) {
-    await addDoc(wardrobeCollectionRef, new WardrobeDB(name, email));
+    await addDoc(
+      wardrobeCollectionRef,
+      new WardrobeDB(name, email, wardrobe)
+    );
     console.log("Data saved to Firestore:", name, email);
   } else {
     console.log("User already exists in Firestore:", email);
   }
 }
 
-
-// export async function createWardrobeDB(name, email) {
-//   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
-//     wardrobeConverter
-//   );
-//   await addDoc(wardrobeCollectionRef, new WardrobeDB(name, email));
-//   console.log("Data saved to Firestore:", name, email);
-// }
 
