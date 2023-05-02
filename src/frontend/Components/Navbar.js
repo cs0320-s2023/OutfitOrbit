@@ -6,8 +6,6 @@ import CLIENT_ID from '../private/auth.tsx';
 import { signInWithGoogle, signOutGoogle, createWardrobeDB } from '../../backend/firebase.js'
 
 function Navbar( props ) {
-    const [currentUser, setCurrentUser] = useState({}); // TODO: change for firebase database
-    const [isSignedIn, setSignedIn] = useState(false);
     const navElem = document.getElementsByClassName("navbar");
     const navbarLinks = document.getElementsByClassName("navbar-links");
     const navbarLinksList = document.getElementsByTagName("li")
@@ -20,21 +18,21 @@ function Navbar( props ) {
     window.addEventListener("scroll", animateNavbar);
 
     function handleSignIn() {
-      if (!isSignedIn) {
+      if (!props.isSignedIn) {
         signInWithGoogle();
         username = localStorage.getItem('name');
         userEmail = localStorage.getItem('email');
         createWardrobeDB(username, userEmail, undefined);
-        setSignedIn(true);
+        props.setSignedIn(true);
       } 
     }
 
     function handleSignOut() {
-      if (isSignedIn) {
+      if (props.isSignedIn) {
         signOutGoogle();
         localStorage.setItem("name", "");
         localStorage.setItem("email", "");
-        setSignedIn(false);
+        props.setSignedIn(false);
       } 
     }
 
@@ -87,7 +85,6 @@ function Navbar( props ) {
         </a>
         <div className="navbar-links">
           <ul className="navbar-links-list">
-            {/* <li><a onClick={smoothScroll("navbar")}>Home</a></li> */}
             <li>
               <a onClick={popUpInstructions}>Instructions</a>
             </li>
@@ -95,10 +92,10 @@ function Navbar( props ) {
               <a onClick={popUpAbout}>About</a>
             </li>
               <li>
-                {isSignedIn &&
+                {props.isSignedIn &&
                   <a><button id="signOutButton" onClick={handleSignOut}>Sign out</button></a>
                 }
-                {!isSignedIn &&
+                {!props.isSignedIn &&
                   <a><button id="signInButton" onClick={handleSignIn}>Sign in</button></a>
                 }
               </li>
@@ -108,4 +105,4 @@ function Navbar( props ) {
     );
 }
 
-export default Navbar
+export default Navbar;

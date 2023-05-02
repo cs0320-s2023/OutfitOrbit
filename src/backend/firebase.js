@@ -98,6 +98,7 @@ const wardrobeConverter = {
   }
 };
 
+/* Create a wardrobe database storage in firebase */
 export async function createWardrobeDB(name, email) {
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
@@ -107,20 +108,29 @@ export async function createWardrobeDB(name, email) {
     query(wardrobeCollectionRef, where("email", "==", email))
   );
 
+  /* If user does not exist then add it to the database, otherwise do not */
   if (querySnapshot.empty) {
     await addDoc(wardrobeCollectionRef, new WardrobeDB(name, email));
     console.log("Data saved to Firestore:", name, email);
   } else {
+    console.log(querySnapshot)
     console.log("User already exists in Firestore:", email);
   }
 }
 
+/* Generalized function reads from database and calls a function on the results */
+//? Can add a callback function as an argument to be exectued passing in the results into the callback
+export async function readFromDB(collectionName, field, value) {
+  const collectionRef = collection(db, collectionName);
 
-// export async function createWardrobeDB(name, email) {
-//   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
-//     wardrobeConverter
-//   );
-//   await addDoc(wardrobeCollectionRef, new WardrobeDB(name, email));
-//   console.log("Data saved to Firestore:", name, email);
-// }
+  const querySnapshot = await getDocs(
+    query(collectionRef, where(field, "==", value))
+  );
 
+  if (!querySnapshot.empty) {
+    const results = querySnapshot.docs.map(doc => doc.data());
+    console.log(`Data retrieved from Firestore (${collectionName}):`, results);
+  } else {
+    console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
+  }
+}

@@ -1,5 +1,5 @@
 import Navbar from './Components/Navbar';
-import Main from "/Users/Taleena/Desktop/cs32/OutfitOrbit/src/backend/Main.js";
+import Main from "../backend/Main";
 import { useState } from 'react';
 import Popup from './Components/Popup'
 import "./App.css"
@@ -8,10 +8,15 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 function App() {
 
+  // About states
   const [instructionsVisibility, setInstructionsVisibility] = useState(false);
   const [aboutVisibility, setAboutVisibility] = useState(false);
 
-  const backgroundImg = require("/Users/Taleena/Desktop/cs32/OutfitOrbit/src/frontend/media/homepage_background_2.png");
+  // Authentication states
+  const [currentUser, setCurrentUser] = useState({}); // TODO: change for firebase database
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const backgroundImg = require("../frontend/media/homepage_background_2.png");
   const backgroundImgElem = document.getElementsByTagName('img'); // returns a collection
 
 
@@ -39,6 +44,8 @@ function App() {
           <Navbar
             setInstructionsVisibility={setInstructionsVisibility}
             setAboutVisibility={setAboutVisibility}
+            setIsSignedIn={setIsSignedIn}
+            isSignedIn={isSignedIn}
           ></Navbar>
         </div>
 
