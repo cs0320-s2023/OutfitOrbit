@@ -141,6 +141,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     console.log(querySnapshot)
     console.log("User already exists in Firestore:", email);
   }
+  readFromDB("wardrobeDB", "email", email); 
 }
 
 /* Generalized function reads from database and calls a function on the results */
