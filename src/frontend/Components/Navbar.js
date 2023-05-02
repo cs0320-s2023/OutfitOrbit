@@ -1,8 +1,6 @@
 import React, { useEffect, useState }from 'react';
 import ReactDOM from 'react-dom';
-import jwt_decode from "jwt-decode";
 import './Navbar.css'
-import CLIENT_ID from '../private/auth.tsx';
 import { signInWithGoogle, signOutGoogle, createWardrobeDB } from '../../backend/firebase.js'
 
 function Navbar( props ) {
@@ -23,7 +21,7 @@ function Navbar( props ) {
         username = localStorage.getItem('name');
         userEmail = localStorage.getItem('email');
         createWardrobeDB(username, userEmail, undefined);
-        props.setSignedIn(true);
+        props.setIsSignedIn(true);
       } 
     }
 
@@ -32,7 +30,7 @@ function Navbar( props ) {
         signOutGoogle();
         localStorage.setItem("name", "");
         localStorage.setItem("email", "");
-        props.setSignedIn(false);
+        props.setIsSignedIn(false);
       } 
     }
 

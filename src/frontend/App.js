@@ -5,6 +5,8 @@ import Popup from './Components/Popup'
 import "./App.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { readFromDB } from '../backend/firebase'
+import Card from "./Components/FlipCard"
 
 function App() {
 
@@ -13,13 +15,12 @@ function App() {
   const [aboutVisibility, setAboutVisibility] = useState(false);
 
   // Authentication states
-  const [currentUser, setCurrentUser] = useState({}); // TODO: change for firebase database
+  const [currentUser, setCurrentUser] = useState({});
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   // images
   const backgroundImg = require("../frontend/media/homepage_background_2.png");
   const backgroundImgElem = document.getElementsByTagName('img'); // returns a collection
-
 
   // Handling image animation against mouse
   function moveImage(e) {
@@ -89,11 +90,12 @@ function App() {
               </div>
             </div>
           </Popup>
+          <Card project="red-dress"></Card>
         </div>
         <div className="generator-container">
           <Main></Main>
         </div>
       </div>
     );
-}
+};
 export default App;
