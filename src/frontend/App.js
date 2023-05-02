@@ -13,6 +13,7 @@ function App() {
   // About states
   const [instructionsVisibility, setInstructionsVisibility] = useState(false);
   const [aboutVisibility, setAboutVisibility] = useState(false);
+  const [addVisibility, setAddVisibility] = useState(false);
 
   // Authentication states
   const [currentUser, setCurrentUser] = useState({});
@@ -40,12 +41,25 @@ function App() {
     backgroundImgElem[0].style.transform = `translateX(${current.x}px) translateY(${current.y}px)`;
   }
 
+    // const handleInputChange = (event) => {
+    //   const { name, value } = event.target;
+    //   useState((prevProps) => ({
+    //     ...prevProps,
+    //     [name]: value,
+    //   }));
+    // };
+
+    const handleSubmit = (event) => {
+      event.preventDefault();
+    };
+
     return (
       <div className="grid-container">
         <div className="navbar-container">
           <Navbar
             setInstructionsVisibility={setInstructionsVisibility}
             setAboutVisibility={setAboutVisibility}
+            setAddVisibility={setAddVisibility}
             setIsSignedIn={setIsSignedIn}
             isSignedIn={isSignedIn}
           ></Navbar>
@@ -90,7 +104,49 @@ function App() {
               </div>
             </div>
           </Popup>
-          <Card project="red-dress"></Card>
+          <Card></Card>
+          <Popup trigger={addVisibility}>
+            <h1 className="instructions-title">Add Clothing to your Closet!</h1>
+            <FontAwesomeIcon
+              onClick={() => {
+                setAddVisibility(false);
+              }}
+              icon={faXmark}
+              className="x-mark fa-2x"
+            />
+            <div className="row">
+              <div className="column">
+                <h2>
+                  Using the form below, add an article of clothing from your
+                  closet into your own virtual wardrobe!
+                </h2>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-control">
+                    <label>Email</label>
+                    <input
+                      type="text"
+                      name="email"
+                      // value={state.email}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label></label>
+                    <button type="submit">Login</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </Popup>
         </div>
         <div className="generator-container">
           <Main></Main>

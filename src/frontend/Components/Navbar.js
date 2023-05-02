@@ -2,6 +2,7 @@ import React, { useEffect, useState }from 'react';
 import ReactDOM from 'react-dom';
 import './Navbar.css'
 import { signInWithGoogle, signOutGoogle, createWardrobeDB } from '../../backend/firebase.js'
+import { prodErrorMap } from '@firebase/auth';
 
 function Navbar( props ) {
     const navElem = document.getElementsByClassName("navbar");
@@ -62,6 +63,10 @@ function Navbar( props ) {
         props.setAboutVisibility(true);
     }
 
+    function popUpAdd() {
+      props.setAddVisibility(true); 
+    }
+
     function smoothScroll(id) {
         document.getElementById(id).scrollIntoView({behavior: "smooth"});
     }
@@ -89,14 +94,25 @@ function Navbar( props ) {
             <li>
               <a onClick={popUpAbout}>About</a>
             </li>
-              <li>
-                {props.isSignedIn &&
-                  <a><button id="signOutButton" onClick={handleSignOut}>Sign out</button></a>
-                }
-                {!props.isSignedIn &&
-                  <a><button id="signInButton" onClick={handleSignIn}>Sign in</button></a>
-                }
-              </li>
+            <li>
+              {props.isSignedIn && <a onClick={popUpAdd}>Add To Closet</a>}
+            </li>
+            <li>
+              {props.isSignedIn && (
+                <a>
+                  <button id="signOutButton" onClick={handleSignOut}>
+                    Sign out
+                  </button>
+                </a>
+              )}
+              {!props.isSignedIn && (
+                <a>
+                  <button id="signInButton" onClick={handleSignIn}>
+                    Sign in
+                  </button>
+                </a>
+              )}
+            </li>
           </ul>
         </div>
       </nav>
