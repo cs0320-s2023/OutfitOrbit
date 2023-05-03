@@ -16,7 +16,6 @@ function App() {
   const [addVisibility, setAddVisibility] = useState(false);
 
   // Authentication states
-  const [currentUser, setCurrentUser] = useState({});
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   // images
@@ -49,6 +48,10 @@ function App() {
     //   }));
     // };
 
+    function readWardrobe() {
+      let userWardrobe = readFromDB("wardrobeDB", "email", localStorage.getItem("email"))
+    }
+
     const handleSubmit = (event) => {
       event.preventDefault();
     };
@@ -61,7 +64,7 @@ function App() {
             setAboutVisibility={setAboutVisibility}
             setAddVisibility={setAddVisibility}
             setIsSignedIn={setIsSignedIn}
-            isSignedIn={isSignedIn}
+            isSignedIn={isSignedIn} 
           ></Navbar>
         </div>
 
@@ -150,11 +153,17 @@ function App() {
         <div className="generator-container">
           <Main></Main>
         </div>
+        {/* Conditional rendering, wardrobe only appears when signed in */}
         {isSignedIn ? (
           <div className="wardrobe-container">
+            <h1 className="wardrobe-title">Your Wardrobe:</h1>
             <Card name="Red Dress"></Card>
           </div>
-        ): <div></div>
+        ): (
+          <div className="wardrobe-container">
+            <h1 className="wardrobe-title"> Please sign in to see your wardrobe!</h1>
+          </div>
+        )
         }
       </div>
     );

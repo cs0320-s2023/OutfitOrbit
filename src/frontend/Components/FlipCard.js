@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactDOM } from "react";
-import "./Card.css";
+import "./FlipCard.css";
 
 export default class Card extends React.Component {
     render() {

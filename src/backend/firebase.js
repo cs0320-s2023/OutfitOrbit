@@ -5,7 +5,7 @@ import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
 import { doc, setDoc, addDoc, query, where} from "firebase/firestore"; 
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "./private/firebase.tsx"
-import { Clothing} from "./Clothing";
+import { Clothing } from "./Clothing";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,7 +24,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(firebaseApp);
 const provider = new GoogleAuthProvider();
 export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
@@ -32,7 +31,7 @@ export const db = getFirestore(firebaseApp);
 export const signInWithGoogle = () => {signInWithPopup(auth, provider)
    //signInWithPopup(auth, new GoogleAuthProvider())
    .then((result) => {
-     // This gives you a Google Access Token. You can use it to access the Google API.
+    // This gives you a Google Access Token. You can use it to access the Google API.
     // const credential = GoogleAuthProvider.credentialFromResult(result);
     // const token = credential.accessToken;
     // The signed-in user info.
@@ -46,13 +45,12 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
     const userData = {
       name: name,
       email: email,
-      wardrobe: [new Clothing("blue", "cotton", "shirt", "casual")],
+      wardrobe: [new Clothing("shirt", "color", "cotton", "casual", "zara")],
     };
 
     localStorage.setItem("name", userData.name);
     localStorage.setItem("email", userData.email);
     localStorage.setItem("wardrobe", userData.wardrobe); 
-    console.log(userData.wardrobe); 
     createWardrobeDB(userData.name, userData.email, userData.wardrobe);
 
   }).catch((error) => {
@@ -77,11 +75,9 @@ export const signOutGoogle = () => {
   });
 }
 
-
 /* Class to represent our database */
 export class WardrobeDB {
   constructor(name, email, wardrobe = []) {
-    //! to add wardrobe component
     this.name = name;
     this.email = email;
     this.wardrobe = wardrobe;
@@ -93,7 +89,6 @@ export class WardrobeDB {
 
 const wardrobeConverter = {
   toFirestore: (wardrobeDB) => {
-        console.log(wardrobeDB.wardrobe);
     const data = {
       name: wardrobeDB.name,
       email: wardrobeDB.email,
@@ -109,19 +104,18 @@ const wardrobeConverter = {
     const wardrobe = data.wardrobe.map((clothing) => {
       return new Clothing(
         clothing.type,
-        clothing.tag,
-        clothing.size,
-        clothing.color
+        clothing.color,
+        clothing.material,
+        clothing.occasion,
+        clothing.brand,
       );
     });
-    console.log(wardrobe)
     return new WardrobeDB(data.name, data.email, wardrobe);
   },
 };
 
 /* Create a wardrobe database storage in firebase */
 export async function createWardrobeDB(name, email, wardrobe = []) {
-  console.log(wardrobe); 
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
   );
@@ -136,9 +130,8 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
       wardrobeCollectionRef,
       new WardrobeDB(name, email, wardrobe)
     );
-    console.log("Data saved to Firestore:", name, email);
+    console.log("Data saved to Firestore:", name, email, wardrobe);
   } else {
-    console.log(querySnapshot)
     console.log("User already exists in Firestore:", email);
   }
   readFromDB("wardrobeDB", "email", email); 
@@ -155,8 +148,11 @@ export async function readFromDB(collectionName, field, value) {
 
   if (!querySnapshot.empty) {
     const results = querySnapshot.docs.map(doc => doc.data());
-    console.log(`Data retrieved from Firestore (${collectionName}):`, results);
+    console.log("results")
+    console.log(results);
+    return results;
   } else {
     console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
+    return null; //! Can we return something more useful than null?
   }
 }

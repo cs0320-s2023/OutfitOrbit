@@ -1,17 +1,19 @@
 export class Clothing {
-  constructor(color, material, type, occassion) {
+  constructor(type, color, material, occassion, brand) {
+    this.type = type;
     this.color = color; 
     this.material = material; 
-    this.type = type;
     this.occassion = occassion; 
+    this.brand = brand;
   }
 
   toJSON() {
     return {
+      type: this.type,
         color: this.color,
-        type: this.type,
         material: this.material,
         occassion: this.occassion,
+        brand: this.brand,
     };
   }
 }
