@@ -45,7 +45,7 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
     const userData = {
       name: name,
       email: email,
-      wardrobe: [new Clothing("shirt", "color", "cotton", "casual", "zara")],
+      wardrobe: [new Clothing("blue zara shirt", "shirt", "color", "cotton", "casual", "zara")],
     };
 
     localStorage.setItem("name", userData.name);
@@ -134,6 +134,22 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     console.log("User already exists in Firestore:", email);
   }
   // readFromDB("wardrobeDB", "email", email); //! uncomment to print out wardrobe
+}
+
+export function addToWardrobe(item) {
+  // Get the current wardrobe from localStorage
+  const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")); //this isn't a JSON, which is causing errors
+
+  // Add the new item to the wardrobe
+  currentWardrobe.push(item);
+
+  // Update the localStorage with the new wardrobe
+  localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe));
+
+  // Update the wardrobe in the database
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("email");
+  createWardrobeDB(name, email, currentWardrobe);
 }
 
 /* Generalized function reads from database and calls a function on the results */

@@ -56,7 +56,6 @@ function NewRound({addGuess}) {
           {TEXT_try_button_text}
         </button>
       </div>
-      
     </div>
   );
 }

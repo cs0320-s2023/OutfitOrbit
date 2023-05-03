@@ -118,3 +118,8 @@ body::-webkit-scrollbar {
 .wardrobe-title {
   color: var(--navy-blue)
 }
+
+.form-control {
+  padding: 10px;
+  color: var(--dusty-rose);
+}

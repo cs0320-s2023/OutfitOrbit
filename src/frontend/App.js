@@ -1,12 +1,14 @@
 import Navbar from './Components/Navbar';
 import Main from "../backend/Main";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Popup from './Components/Popup'
 import "./App.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { readFromDB } from '../backend/firebase'
 import Card from "./Components/FlipCard"
+import { Clothing } from '../backend/Clothing';
+import { addToWardrobe } from '../backend/firebase';
 
 function App() {
 
@@ -17,6 +19,7 @@ function App() {
 
   // Authentication states
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [wardrobe, setWardrobe] = useState([]);
 
   // images
   const backgroundImg = require("../frontend/media/homepage_background_2.png");
@@ -48,26 +51,55 @@ function App() {
     //   }));
     // };
 
-    getWardrobe();
-
     /* Get the wardrobe for the current user */
     async function getWardrobe() {
       if (isSignedIn) { 
         let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
-        console.log(userData.wardrobe[0])
+        console.log(userData.wardrobe)
         return userData.wardrobe;
       }
     }
-
-    function generateCard() {
+    
+    async function generateCard() {
       if (isSignedIn) {
-        
+        let userWardrobe = await getWardrobe();
+        let cards = userWardrobe.map((clothing) => {
+          console.log(clothing.occasion);
+          console.log(clothing.brand);
+          return (
+            <Card 
+              key={clothing.id}
+              name={clothing.name}
+              type={clothing.type}
+              color={clothing.color}
+              material={clothing.material}
+              occasion={clothing.occasion}
+              brand={clothing.brand}
+            />
+          );
+        });
+        setWardrobe(cards);
       }
     }
+  
+    useEffect(() => {
+      generateCard();
+    }, [isSignedIn]);
 
-    const handleSubmit = (event) => {
-      event.preventDefault();
-    };
+
+    function handleSubmit(event) {
+      event.preventDefault(); // prevent the form from submitting
+    
+      // get the values of each input box
+      const brand = event.target.elements.brand.value;
+      const type = event.target.elements.type.value;
+      const colour = event.target.elements.colour.value;
+      const material = event.target.elements.material.value;
+      const occasion = event.target.elements.occasion.value;
+    
+      // create a new Clothing item with the fields provided
+      addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+    }    
 
     return (
       <div className="grid-container">
@@ -137,26 +169,53 @@ function App() {
                 </h2>
                 <form onSubmit={handleSubmit}>
                   <div className="form-control">
-                    <label>Email</label>
+                    <label>Brand</label> <br />
                     <input
                       type="text"
-                      name="email"
+                      name="brand"
                       // value={state.email}
                       // onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-control">
-                    <label>Password</label>
+                    <label>Type</label><br />
                     <input
-                      type="password"
-                      name="password"
+                      type="text"
+                      name="type"
                       // value={state.password}
                       // onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-control">
+                    <label>Colour</label><br />
+                    <input
+                      type="text"
+                      name="colour"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Material</label><br />
+                    <input
+                      type="text"
+                      name="material"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Occasion</label><br />
+                    <input
+                      type="text"
+                      name="occasion"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control"><br />
                     <label></label>
-                    <button type="submit">Login</button>
+                    <button type="submit">Submit</button>
                   </div>
                 </form>
               </div>
@@ -169,8 +228,10 @@ function App() {
         {/* Conditional rendering, wardrobe only appears when signed in */}
         {isSignedIn ? (
           <div className="wardrobe-container">
-            <h1 className="wardrobe-title">Your Wardrobe:</h1>
-            <Card name="Red dress"></Card>
+            <h1 className="wardrobe-title">
+              {isSignedIn ? "Your Wardrobe:" : "Please sign in to see your wardrobe!"}
+            </h1>
+            {wardrobe.length > 0 ? wardrobe : "Loading..."}
           </div>
         ): (
           <div className="wardrobe-container">
