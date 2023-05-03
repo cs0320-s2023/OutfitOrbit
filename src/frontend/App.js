@@ -48,8 +48,15 @@ function App() {
     //   }));
     // };
 
-    function readWardrobe() {
-      let userWardrobe = readFromDB("wardrobeDB", "email", localStorage.getItem("email"))
+    getWardrobe();
+
+    /* Get the wardrobe for the current user */
+    async function getWardrobe() {
+      if (isSignedIn) { 
+        let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
+        // console.log(userData.wardrobe[0].type)
+        return userData.wardrobe;
+      }
     }
 
     const handleSubmit = (event) => {
@@ -157,7 +164,7 @@ function App() {
         {isSignedIn ? (
           <div className="wardrobe-container">
             <h1 className="wardrobe-title">Your Wardrobe:</h1>
-            <Card name="Red Dress"></Card>
+            <Card name="Red dress"></Card>
           </div>
         ): (
           <div className="wardrobe-container">

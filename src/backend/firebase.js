@@ -50,7 +50,7 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
 
     localStorage.setItem("name", userData.name);
     localStorage.setItem("email", userData.email);
-    localStorage.setItem("wardrobe", userData.wardrobe); 
+    localStorage.setItem("wardrobe", userData.wardrobe);
     createWardrobeDB(userData.name, userData.email, userData.wardrobe);
 
   }).catch((error) => {
@@ -67,7 +67,6 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
 
 export const signOutGoogle = () => {
   signOut(auth).then(() => {
-    console.log("signed out")
     // Sign-out successful.
   }).catch((error) => {
     // An error happened.
@@ -134,7 +133,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   } else {
     console.log("User already exists in Firestore:", email);
   }
-  readFromDB("wardrobeDB", "email", email); 
+  // readFromDB("wardrobeDB", "email", email); //! uncomment to print out wardrobe
 }
 
 /* Generalized function reads from database and calls a function on the results */
@@ -148,9 +147,7 @@ export async function readFromDB(collectionName, field, value) {
 
   if (!querySnapshot.empty) {
     const results = querySnapshot.docs.map(doc => doc.data());
-    console.log("results")
-    console.log(results);
-    return results;
+    return results[0]; // only one user with email so always 0 value
   } else {
     console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
     return null; //! Can we return something more useful than null?
