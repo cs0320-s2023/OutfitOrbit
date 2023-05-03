@@ -98,6 +98,7 @@ const wardrobeConverter = {
   }
 };
 
+/* Create a wardrobe database storage in firebase */
 export async function createWardrobeDB(name, email) {
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
@@ -107,20 +108,16 @@ export async function createWardrobeDB(name, email) {
     query(wardrobeCollectionRef, where("email", "==", email))
   );
 
+  /* If user does not exist then add it to the database, otherwise do not */
   if (querySnapshot.empty) {
     await addDoc(wardrobeCollectionRef, new WardrobeDB(name, email));
     console.log("Data saved to Firestore:", name, email);
   } else {
+    console.log(querySnapshot)
     console.log("User already exists in Firestore:", email);
   }
 }
 
-
-// export async function createWardrobeDB(name, email) {
-//   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
-//     wardrobeConverter
-//   );
-//   await addDoc(wardrobeCollectionRef, new WardrobeDB(name, email));
-//   console.log("Data saved to Firestore:", name, email);
-// }
-
+export async function readFromDB() {
+  
+}
