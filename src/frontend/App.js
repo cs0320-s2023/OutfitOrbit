@@ -104,7 +104,14 @@ function App() {
               </div>
             </div>
           </Popup>
-          <Card></Card>
+
+
+
+          <Card name="Red Dress"></Card>
+
+
+
+
           <Popup trigger={addVisibility}>
             <h1 className="instructions-title">Add Clothing to your Closet!</h1>
             <FontAwesomeIcon

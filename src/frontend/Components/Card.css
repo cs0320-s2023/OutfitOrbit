@@ -3,7 +3,6 @@
 }
 
 :root {
-    --main-font: 'Yanone Kaffeesatz', sans-serif;
     --new-white: rgb(248, 246, 234);
     --text-margin: 10px;
   }
@@ -13,7 +12,6 @@
     width: 100%;
     margin: 0;
     background: rgb(209, 182, 214);
-    font-family: var(--main-font);
     position: absolute;
     box-sizing: border-box;
   }
@@ -31,34 +29,53 @@
   }
   
   body #root .page-container .card-container {
-    height: 350px;
+    height: 150px;
     margin: 0;
     padding: 0;
     top: 20px;
-    width: 330px;
+    width: 200px;
     margin-left: 35%;
     margin-right: 35%;
     position: relative;
     transform-style: preserve-3d;
     box-sizing: border-box;
   }
+
+  body #root .main-area {
+    text-align: center;
+  }
   
   body #root .page-container .card-container.flipped .front {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     transform: rotateY(180deg);
+    text-align: center;
+  }
+
+  body #root .cloth-title {
+    font-size: 150%;
   }
   
   body #root .page-container .card-container.flipped .back {
+    display: block;
+    align-items: center;
+    justify-content: center;
     transform: rotateY(0deg);
   }
+
   
   body #root .page-container .card-container .front,
   body #root .page-container .card-container .back {
-    box-sizing: border-box;
     height: 100%;
     width: 100%;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     background: var(--new-white);
-    box-shadow: 10px 10px 5px rgb(95, 77, 99);
+    box-shadow: 5px 5px 2.5px rgb(95, 77, 99);
     padding: 10px;
     position: absolute;
     border-radius: 10px;
@@ -66,6 +83,12 @@
     transform-style: preserve-3d;
     transition: -webkit-transform ease 500ms;
     transition: transform ease 500ms;
+  }
+
+  body #root .page-container .card-container .back {
+    display: block;
+    align-items: center;
+    justify-content: center;
   }
   
   body #root .page-container .card-container .front {
@@ -77,62 +100,12 @@
   body #root .page-container .card-container .back {
     background: var(--new-white);
     transform: rotateY(-180deg);
-    padding: 20px;
-    font-size: 20px;
     /* back tile styles go here! */
   }
   
-  body #root .page-container .card-container .image-container {
-    position: relative;
-  }
-  
-  body #root .page-container .card-container .image-container .card-image {
-    width: 100%;
-    border-radius: 10px;
-  }
-  
-  body #root .page-container .card-container .image-container .title {
-    font-size: 34px;
-    position: absolute;
-    margin-bottom: var(--text-margin);
-    margin-left: var(--text-margin);
-    bottom: 0;
-    left: 0;
-    color: var(--new-white);
-  }
-  
-  body #root .page-container .card-container .main-area {
-    margin-left: var(--text-margin);
-    margin-top: var(--text-margin);
-    margin-right: var(--text-margin);
-  }
-  
-  body #root .page-container .card-container .main-area .blog-post {
-    height: 100%;
-  }
-
-  
-  body #root .page-container .card-container .main-area .blog-post .read-more {  
-    font-size: 20px;
-    position: relative;
-    bottom: 0px;
-    text-align: right;
-  }
-  
-  body #root .page-container .card-container .main-area .blog-post .blog-content {
-    height: 90%;
-    display: block;
-    margin-top: var(--text-margin);
-    margin-bottom: var(--text-margin);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  body #root footer {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 20px;
+  body #root p {
+    margin: 0.2rem;
+    padding: 0.2rem;
+    font-size: 14px;
   }
     

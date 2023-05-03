@@ -6,7 +6,13 @@ export default class Card extends React.Component {
     render() {
       return (
         <div className="page-container">
-          <BlogCard />
+          <BlogCard 
+          name={this.props.name}
+          color={this.props.color}
+          material={this.props.material}
+          type={this.props.type} // shirt, trousers etc...
+          note={this.props.note}
+          />
         </div>
       )
     }
@@ -26,8 +32,12 @@ export default class Card extends React.Component {
     render() {
       return (
         <div onMouseEnter={this.flip} onMouseLeave={this.flip} className={"card-container" + (this.state.flipped ? " flipped" : "")}>
-          <Front />
-          <Back />
+          <Front name={this.props.name}/>
+          <Back 
+          color={this.props.color}
+          material={this.props.material}
+          type={this.props.type}
+          note={this.props.note}/>
         </div>
   
       )
@@ -38,7 +48,7 @@ export default class Card extends React.Component {
     render() {
       return (
         <div className="front">
-          <MainArea />
+          <MainArea name={this.props.name}/>
         </div>
       )
     }
@@ -48,8 +58,10 @@ export default class Card extends React.Component {
     render() {
       return (
         <div className="back">
-          <p>Some sample text to demonstrate how these cards will work, including how they truncate long sentences. This section displays the full-length blog post.</p>
-          <p>Bloggity bloggity bloggity blog. This would be the full text of the abbreviated blog post.</p>
+            <p>Type: {this.props.type}</p>
+            <p>Material: {this.props.material}</p>
+            <p>Color: {this.props.color}</p>
+            <p>Note: {this.props.note}</p>
         </div>
       )
     }
@@ -60,11 +72,8 @@ export default class Card extends React.Component {
       return (
         <div className="main-area">
           <div className="blog-post">
-            <p className="blog-content">
-              Some sample text to demonstrate how these cards will work, including how they truncate long sentences.
-              </p>
-            <p className="read-more">Hover to read more...</p>
-  
+          {/* display the name of the card */}
+          <h1 className="cloth-title">{this.props.name}</h1> 
           </div>
         </div>
       )
