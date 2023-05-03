@@ -104,14 +104,6 @@ function App() {
               </div>
             </div>
           </Popup>
-
-
-
-          <Card name="Red Dress"></Card>
-
-
-
-
           <Popup trigger={addVisibility}>
             <h1 className="instructions-title">Add Clothing to your Closet!</h1>
             <FontAwesomeIcon
@@ -158,6 +150,12 @@ function App() {
         <div className="generator-container">
           <Main></Main>
         </div>
+        {isSignedIn ? (
+          <div className="wardrobe-container">
+            <Card name="Red Dress"></Card>
+          </div>
+        ): <div></div>
+        }
       </div>
     );
 };
