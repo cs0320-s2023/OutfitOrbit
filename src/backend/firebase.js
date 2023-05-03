@@ -136,6 +136,22 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   // readFromDB("wardrobeDB", "email", email); //! uncomment to print out wardrobe
 }
 
+export function addToWardrobe(item) {
+  // Get the current wardrobe from localStorage
+  const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")); //this isn't a JSON, which is causing errors
+
+  // Add the new item to the wardrobe
+  currentWardrobe.push(item);
+
+  // Update the localStorage with the new wardrobe
+  localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe));
+
+  // Update the wardrobe in the database
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("email");
+  createWardrobeDB(name, email, currentWardrobe);
+}
+
 /* Generalized function reads from database and calls a function on the results */
 //? Can add a callback function as an argument to be exectued passing in the results into the callback
 export async function readFromDB(collectionName, field, value) {

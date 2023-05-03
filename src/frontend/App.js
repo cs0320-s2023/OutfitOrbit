@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { readFromDB } from '../backend/firebase'
 import Card from "./Components/FlipCard"
+import { Clothing } from '../backend/Clothing';
+import { addToWardrobe } from '../backend/firebase';
 
 function App() {
 
@@ -59,9 +61,19 @@ function App() {
       }
     }
 
-    const handleSubmit = (event) => {
-      event.preventDefault();
-    };
+    function handleSubmit(event) {
+      event.preventDefault(); // prevent the form from submitting
+    
+      // get the values of each input box
+      const brand = event.target.elements.brand.value;
+      const type = event.target.elements.type.value;
+      const colour = event.target.elements.colour.value;
+      const material = event.target.elements.material.value;
+      const occasion = event.target.elements.occasion.value;
+    
+      // create a new Clothing item with the fields provided
+      addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+    }    
 
     return (
       <div className="grid-container">
@@ -131,26 +143,53 @@ function App() {
                 </h2>
                 <form onSubmit={handleSubmit}>
                   <div className="form-control">
-                    <label>Email</label>
+                    <label>Brand</label> <br />
                     <input
                       type="text"
-                      name="email"
+                      name="brand"
                       // value={state.email}
                       // onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-control">
-                    <label>Password</label>
+                    <label>Type</label><br />
                     <input
-                      type="password"
-                      name="password"
+                      type="text"
+                      name="type"
                       // value={state.password}
                       // onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-control">
+                    <label>Colour</label><br />
+                    <input
+                      type="text"
+                      name="colour"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Material</label><br />
+                    <input
+                      type="text"
+                      name="material"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Occasion</label><br />
+                    <input
+                      type="text"
+                      name="occasion"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control"><br />
                     <label></label>
-                    <button type="submit">Login</button>
+                    <button type="submit">Submit</button>
                   </div>
                 </form>
               </div>
