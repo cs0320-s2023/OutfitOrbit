@@ -54,8 +54,14 @@ function App() {
     async function getWardrobe() {
       if (isSignedIn) { 
         let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
-        // console.log(userData.wardrobe[0].type)
+        console.log(userData.wardrobe[0])
         return userData.wardrobe;
+      }
+    }
+
+    function generateCard() {
+      if (isSignedIn) {
+        
       }
     }
 
