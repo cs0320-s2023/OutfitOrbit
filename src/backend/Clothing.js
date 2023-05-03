@@ -1,10 +1,10 @@
 export class Clothing {
-  constructor(name, type, color, material, occassion, brand) {
+  constructor(name, type, color, material, occasion, brand) {
     this.name = name;
     this.type = type;
     this.color = color; 
     this.material = material; 
-    this.occassion = occassion; 
+    this.occasion = occasion; 
     this.brand = brand;
   }
 
@@ -14,7 +14,7 @@ export class Clothing {
       type: this.type,
       color: this.color,
       material: this.material,
-      occassion: this.occassion,
+      occasion: this.occasion,
       brand: this.brand,
     };
   }

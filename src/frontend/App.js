@@ -55,8 +55,8 @@ function App() {
     async function getWardrobe() {
       if (isSignedIn) { 
         let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
-        console.log(userData.wardrobe)
-        return userData.wardrobe;
+        // console.log(userData.wardrobe)
+        return userData;
       }
     }
     
@@ -64,8 +64,6 @@ function App() {
       if (isSignedIn) {
         let userWardrobe = await getWardrobe();
         let cards = userWardrobe.map((clothing) => {
-          console.log(clothing.occasion);
-          console.log(clothing.brand);
           return (
             <Card 
               key={clothing.id}
@@ -91,6 +89,7 @@ function App() {
       event.preventDefault(); // prevent the form from submitting
     
       // get the values of each input box
+      const name = event.target.elements.name.value;
       const brand = event.target.elements.brand.value;
       const type = event.target.elements.type.value;
       const colour = event.target.elements.colour.value;
@@ -98,7 +97,7 @@ function App() {
       const occasion = event.target.elements.occasion.value;
     
       // create a new Clothing item with the fields provided
-      addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+      // addToWardrobe(new Clothing(type, colour, material, occasion, brand));
     }    
 
     return (

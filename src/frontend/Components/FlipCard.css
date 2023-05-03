@@ -29,11 +29,11 @@
   }
   
   body #root .card-container {
-    height: 125px;
+    height: 150px;
     margin: 0;
     padding: 0;
     top: 20px;
-    width: 150px;
+    width: 175px;
     margin-left: auto;
     margin-right: auto;
     position: relative;

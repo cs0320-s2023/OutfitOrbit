@@ -45,13 +45,13 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
     const userData = {
       name: name,
       email: email,
-      wardrobe: [new Clothing("blue zara shirt", "shirt", "color", "cotton", "casual", "zara")],
+      wardrobe: [new Clothing("blue-zara-shirt", "shirt", "color", "cotton", "casual", "zara")],
     };
 
     localStorage.setItem("name", userData.name);
     localStorage.setItem("email", userData.email);
     localStorage.setItem("wardrobe", userData.wardrobe);
-    createWardrobeDB(userData.name, userData.email, userData.wardrobe);
+    // createWardrobeDB(userData.name, userData.email, userData.wardrobe);
 
   }).catch((error) => {
     console.log(error)
@@ -102,6 +102,7 @@ const wardrobeConverter = {
     const data = snapshot.data(options);
     const wardrobe = data.wardrobe.map((clothing) => {
       return new Clothing(
+        clothing.name,
         clothing.type,
         clothing.color,
         clothing.material,
@@ -125,6 +126,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
 
   /* If user does not exist then add it to the database, otherwise do not */
   if (querySnapshot.empty) {
+    console.log(name, email, wardrobe)
     await addDoc(
       wardrobeCollectionRef,
       new WardrobeDB(name, email, wardrobe)
@@ -136,21 +138,21 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   // readFromDB("wardrobeDB", "email", email); //! uncomment to print out wardrobe
 }
 
-export function addToWardrobe(item) {
-  // Get the current wardrobe from localStorage
-  const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")); //this isn't a JSON, which is causing errors
+// export function addToWardrobe(item) {
+//   // Get the current wardrobe from localStorage
+//   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")); //this isn't a JSON, which is causing errors
 
-  // Add the new item to the wardrobe
-  currentWardrobe.push(item);
+//   // Add the new item to the wardrobe
+//   currentWardrobe.push(item);
 
-  // Update the localStorage with the new wardrobe
-  localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe));
+//   // Update the localStorage with the new wardrobe
+//   localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe));
 
-  // Update the wardrobe in the database
-  const name = localStorage.getItem("name");
-  const email = localStorage.getItem("email");
-  createWardrobeDB(name, email, currentWardrobe);
-}
+//   // Update the wardrobe in the database
+//   const name = localStorage.getItem("name");
+//   const email = localStorage.getItem("email");
+//   createWardrobeDB(name, email, currentWardrobe);
+// }
 
 /* Generalized function reads from database and calls a function on the results */
 //? Can add a callback function as an argument to be exectued passing in the results into the callback
@@ -161,11 +163,15 @@ export async function readFromDB(collectionName, field, value) {
     query(collectionRef, where(field, "==", value))
   );
 
+  console.log(querySnapshot);
+
   if (!querySnapshot.empty) {
+    console.log("NOT EMPTY")
     const results = querySnapshot.docs.map(doc => doc.data());
-    return results[0]; // only one user with email so always 0 value
+    return results[0].wardrobe; // only one user with email so always 0 value
   } else {
     console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
-    return null; //! Can we return something more useful than null?
+    await createWardrobeDB(localStorage.getItem("name"), localStorage.getItem("email"), localStorage.getItem("wardrobe")); //! Can we return something more useful than null?
+    //readFromDB(collectionName, field, value);
   }
 }
