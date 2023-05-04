@@ -28,6 +28,9 @@ const provider = new GoogleAuthProvider();
 export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
 
+let userName;
+let userEmail;
+
 export const signInWithGoogle = () => {signInWithPopup(auth, provider)
    //signInWithPopup(auth, new GoogleAuthProvider())
    .then((result) => {
@@ -36,22 +39,17 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
     // const token = credential.accessToken;
     // The signed-in user info.
     const user = result.user;
-    const name = user.displayName;
-    const email = user.email;
+    const userName = user.displayName;
+    const userEmail = user.email;
 
+    createWardrobeDB(userName, userEmail, 
+      [new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
+    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]);
 
-    // Save user data to Firestore
-    const userCollectionRef = collection(db, "users");
-    const userData = {
-      name: name,
-      email: email,
-      wardrobe: [new Clothing("blue-zara-shirt", "shirt", "color", "cotton", "casual", "zara")],
-    };
-
-    localStorage.setItem("name", userData.name);
-    localStorage.setItem("email", userData.email);
-    localStorage.setItem("wardrobe", userData.wardrobe);
-    // createWardrobeDB(userData.name, userData.email, userData.wardrobe);
+    localStorage.setItem("name", userName);
+    localStorage.setItem("email", userEmail);
+    localStorage.setItem("wardrobe", [new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
+    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]);
 
   }).catch((error) => {
     console.log(error)
@@ -115,32 +113,27 @@ const wardrobeConverter = {
 };
 
 /* Create a wardrobe database storage in firebase */
-export function createWardrobeDB(name, email, wardrobe = []) {
+export async function createWardrobeDB(name, email, wardrobe = []) {
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
   );
 
-  return new Promise(async (resolve, reject) => {
-    const querySnapshot = await getDocs(
-      query(wardrobeCollectionRef, where("email", "==", email))
+  const querySnapshot = await getDocs(
+    query(wardrobeCollectionRef, where("email", "==", email))
+  );
+
+  /* If user does not exist then add it to the database, otherwise do not */
+  if (querySnapshot.empty && localStorage.getItem("wardrobe") != []) {
+    console.log(name, email, wardrobe)
+    await addDoc(
+      wardrobeCollectionRef,
+      new WardrobeDB(name, email, wardrobe)
     );
-
-    /* If user does not exist then add it to the database, otherwise do not */
-    if (querySnapshot.empty) {
-      console.log(name, email, wardrobe);
-      await addDoc(
-        wardrobeCollectionRef,
-        new WardrobeDB(name, email, wardrobe)
-      );
-      console.log("Data saved to Firestore:", name, email, wardrobe);
-      resolve(); // resolve the Promise when the wardrobe is created
-    } else {
-      console.log("User already exists in Firestore:", email);
-      resolve(); // resolve the Promise when the user already exists in the database
-    }
-  });
+    console.log("Data saved to Firestore:", name, email, wardrobe);
+  } else {
+    console.log("User already exists in Firestore:", email);
+  }
 }
-
 
 // export function addToWardrobe(item) {
 //   // Get the current wardrobe from localStorage
@@ -160,29 +153,22 @@ export function createWardrobeDB(name, email, wardrobe = []) {
 
 /* Generalized function reads from database and calls a function on the results */
 //? Can add a callback function as an argument to be exectued passing in the results into the callback
-export function readFromDB(collectionName, field, value) {
-  return new Promise((resolve, reject) => {
-    const collectionRef = collection(db, collectionName);
-    getDocs(query(collectionRef, where(field, "==", value)))
-      .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-          console.log("NOT EMPTY")
-          const results = querySnapshot.docs.map(doc => doc.data());
-          resolve(results[0].wardrobe); // only one user with email so always 0 value
-        } else {
-          console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
-          createWardrobeDB(localStorage.getItem("name"), localStorage.getItem("email"), localStorage.getItem("wardrobe"))
-            .then(() => {
-              resolve(readFromDB(collectionName, field, value));
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-}
+export async function readFromDB(collectionName, field, value) {
+  const collectionRef = collection(db, collectionName);
 
+  const querySnapshot = await getDocs(
+    query(collectionRef, where(field, "==", value))
+  );
+
+  console.log(querySnapshot);
+
+  if (!querySnapshot.empty) {
+    console.log("NOT EMPTY")
+    const results = querySnapshot.docs.map(doc => doc.data());
+    return results[0].wardrobe; // only one user with email so always 0 value
+  } else {
+    console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
+    await createWardrobeDB(localStorage.getItem("name"), localStorage.getItem("email"), localStorage.getItem("wardrobe")); //! Can we return something more useful than null?
+    return readFromDB(collectionName, field, value);
+  }
+}
