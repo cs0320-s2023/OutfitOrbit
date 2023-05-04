@@ -21,7 +21,7 @@ function ControlledInput({ value, setValue, ariaLabel }) {
 }
 
 function OldRound({guess}) {
-  const [data, setData] = useState("");
+  const [data, setData] = useState ("");
 
   console.log("result is" + data)
   return (
@@ -36,7 +36,13 @@ function NewRound({addGuess}) {
   return (
     <div className="searchBar">
       <div className="Bar">
+        {/* This is a comment within the JSX. Notice that it's a TypeScript comment wrapped in
+          braces, so that React knows it should be interpreted as TypeScript */}
+
+        {/* I opted to use this HTML tag; you don't need to. It structures multiple input fields
+          into a single unit, which makes it easier for screenreaders to navigate. */}
         <fieldset>
+          {/* <legend>Type words to generate your scary story:</legend> */}
           <ControlledInput
             value={value0}
             setValue={setValue0}
@@ -53,9 +59,11 @@ function NewRound({addGuess}) {
           }}
           aria-label={TEXT_try_button_accessible_name}
         >
+          {/* The text displayed on the button */}
           {TEXT_try_button_text}
         </button>
       </div>
+      
     </div>
   );
 }
