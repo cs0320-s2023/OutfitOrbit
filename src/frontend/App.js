@@ -53,19 +53,17 @@ function App() {
 
     /* Get the wardrobe for the current user */
     async function getWardrobe() {
-      if (isSignedIn) { 
+      if (isSignedIn && localStorage.getItem("wardrobe")) { 
         let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
         console.log(userData.wardrobe)
-        return userData.wardrobe;
+        return userData;
       }
     }
     
     async function generateCard() {
-      if (isSignedIn) {
+      if (isSignedIn && localStorage.getItem("wardrobe")) {
         let userWardrobe = await getWardrobe();
         let cards = userWardrobe.map((clothing) => {
-          console.log(clothing.occasion);
-          console.log(clothing.brand);
           return (
             <Card 
               key={clothing.id}
@@ -91,6 +89,7 @@ function App() {
       event.preventDefault(); // prevent the form from submitting
     
       // get the values of each input box
+      const name = event.target.elements.name.value;
       const brand = event.target.elements.brand.value;
       const type = event.target.elements.type.value;
       const colour = event.target.elements.colour.value;
@@ -98,7 +97,7 @@ function App() {
       const occasion = event.target.elements.occasion.value;
     
       // create a new Clothing item with the fields provided
-      addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+      // addToWardrobe(new Clothing(type, colour, material, occasion, brand));
     }    
 
     return (
@@ -227,11 +226,14 @@ function App() {
         </div>
         {/* Conditional rendering, wardrobe only appears when signed in */}
         {isSignedIn ? (
-          <div className="wardrobe-container">
+          <div>
             <h1 className="wardrobe-title">
               {isSignedIn ? "Your Wardrobe:" : "Please sign in to see your wardrobe!"}
             </h1>
+          <div className="wardrobe-container">
+            <br/>
             {wardrobe.length > 0 ? wardrobe : "Loading..."}
+          </div>
           </div>
         ): (
           <div className="wardrobe-container">

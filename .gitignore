@@ -1,3 +1,5 @@
 node_modules
+node_modules copy
 src/backend/private/
 src/frontend/private/
+src.zip
