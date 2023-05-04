@@ -81,8 +81,18 @@ function App() {
     }
   
     useEffect(() => {
-      generateCard();
-    }, [isSignedIn]);
+      const fetchData = async () => {
+        try {
+          const wardrobe = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
+          setWardrobe(wardrobe || []);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    
+      fetchData();
+    }, []);
+    
 
 
     function handleSubmit(event) {

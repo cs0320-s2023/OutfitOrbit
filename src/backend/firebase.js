@@ -172,6 +172,6 @@ export async function readFromDB(collectionName, field, value) {
   } else {
     console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
     await createWardrobeDB(localStorage.getItem("name"), localStorage.getItem("email"), localStorage.getItem("wardrobe")); //! Can we return something more useful than null?
-    //readFromDB(collectionName, field, value);
+    return readFromDB(collectionName, field, value);
   }
 }
