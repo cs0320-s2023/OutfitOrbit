@@ -88,7 +88,7 @@ body::-webkit-scrollbar {
 
 .generator-container {
   grid-area: generator;
-  z-index: 1;
+  z-index: 0;
   display: flex;
   position: relative;
   align-items: center;

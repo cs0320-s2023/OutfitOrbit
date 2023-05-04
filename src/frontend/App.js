@@ -53,7 +53,7 @@ function App() {
 
     /* Get the wardrobe for the current user */
     async function getWardrobe() {
-      if (isSignedIn) { 
+      if (isSignedIn && localStorage.getItem("wardrobe")) { 
         try {
           let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
           return userData;
@@ -69,6 +69,8 @@ function App() {
         if (isSignedIn) {
           let userWardrobe = await getWardrobe();
           let cards = userWardrobe.map((clothing) => {
+            console.log(clothing.ocasion)
+            console.log(clothing.brand)
             return (
               <Card 
                 key={clothing.id}
@@ -174,10 +176,6 @@ function App() {
             />
             <div className="row">
               <div className="column">
-                <h2>
-                  Using the form below, add an article of clothing from your
-                  closet into your own virtual wardrobe!
-                </h2>
                 <form onSubmit={handleSubmit}>
                   <div className="form-control">
                     <label>Brand</label> <br />

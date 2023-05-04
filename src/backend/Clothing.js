@@ -23,7 +23,7 @@ export class Clothing {
   const type = clothingObj.type;
   const color = clothingObj.color;
   const material = clothingObj.material;
-  const occassion = clothingObj.occassion;
+  const occassion = clothingObj.occasion;
   const brand = clothingObj.brand;
 
   return new Clothing(type, color, material, occassion, brand);

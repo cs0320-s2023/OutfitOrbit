@@ -123,7 +123,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   );
 
   /* If user does not exist then add it to the database, otherwise do not */
-  if (querySnapshot.empty && localStorage.getItem("wardrobe") != []) {
+  if (querySnapshot.empty && localStorage.getItem("wardrobe").length != 0) {
     console.log(name, email, wardrobe)
     await addDoc(
       wardrobeCollectionRef,
@@ -168,7 +168,7 @@ export async function readFromDB(collectionName, field, value) {
     return results[0].wardrobe; // only one user with email so always 0 value
   } else {
     console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
-    await createWardrobeDB(localStorage.getItem("name"), localStorage.getItem("email"), localStorage.getItem("wardrobe")); //! Can we return something more useful than null?
+    await createWardrobeDB(localStorage.getItem("name"), localStorage.getItem("email"), localStorage.getItem("wardrobe"));
     return readFromDB(collectionName, field, value);
   }
 }
