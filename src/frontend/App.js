@@ -238,11 +238,13 @@ function App() {
         </div>
         {/* Conditional rendering, wardrobe only appears when signed in */}
         {isSignedIn ? (
-          <div className="wardrobe-container">
+          <div>
             <h1 className="wardrobe-title">
               {isSignedIn ? "Your Wardrobe:" : "Please sign in to see your wardrobe!"}
             </h1>
+          <div className="wardrobe-container">
             {wardrobe.length > 0 ? wardrobe : "Loading..."}
+            </div>
           </div>
         ): (
           <div className="wardrobe-container">
