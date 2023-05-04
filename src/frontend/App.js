@@ -1,6 +1,6 @@
 import Navbar from './Components/Navbar';
 import Main from "../backend/Main";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Popup from './Components/Popup'
 import "./App.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -19,6 +19,7 @@ function App() {
 
   // Authentication states
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [wardrobe, setWardrobe] = useState([]);
 
   // images
   const backgroundImg = require("../frontend/media/homepage_background_2.png");
@@ -50,21 +51,59 @@ function App() {
     //   }));
     // };
 
-    getWardrobe();
-
     /* Get the wardrobe for the current user */
     async function getWardrobe() {
-      if (isSignedIn) { 
-        let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
-        // console.log(userData.wardrobe[0].type)
-        return userData.wardrobe;
+      if (isSignedIn && localStorage.getItem("wardrobe")) { 
+        try {
+          let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
+          return userData;
+        } catch (error) {
+          console.log(error);
+          return null; // or handle the error in some other way
+        }
       }
     }
+    
+    async function generateCard() {
+      return new Promise(async (resolve) => {
+        if (isSignedIn) {
+          let userWardrobe = await getWardrobe();
+          let cards = userWardrobe.map((clothing) => {
+            console.log(clothing.ocasion)
+            console.log(clothing.brand)
+            return (
+              <Card 
+                key={clothing.id}
+                name={clothing.name}
+                type={clothing.type}
+                color={clothing.color}
+                material={clothing.material}
+                occasion={clothing.occasion}
+                brand={clothing.brand}
+              />
+            );
+          });
+          setWardrobe(cards);
+        }
+        resolve();
+      });
+    }
+    
+    useEffect(() => {
+      const generateCardAsync = async () => {
+        console.log("USEFFECT CALLED")
+        await generateCard();
+      };
+      generateCardAsync();
+    }, [isSignedIn]);
+    
+
 
     function handleSubmit(event) {
       event.preventDefault(); // prevent the form from submitting
     
       // get the values of each input box
+      const name = event.target.elements.name.value;
       const brand = event.target.elements.brand.value;
       const type = event.target.elements.type.value;
       const colour = event.target.elements.colour.value;
@@ -72,7 +111,7 @@ function App() {
       const occasion = event.target.elements.occasion.value;
     
       // create a new Clothing item with the fields provided
-      addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+      // addToWardrobe(new Clothing(type, colour, material, occasion, brand));
     }    
 
     return (
@@ -137,10 +176,6 @@ function App() {
             />
             <div className="row">
               <div className="column">
-                <h2>
-                  Using the form below, add an article of clothing from your
-                  closet into your own virtual wardrobe!
-                </h2>
                 <form onSubmit={handleSubmit}>
                   <div className="form-control">
                     <label>Brand</label> <br />
@@ -201,9 +236,13 @@ function App() {
         </div>
         {/* Conditional rendering, wardrobe only appears when signed in */}
         {isSignedIn ? (
+          <div>
+            <h1 className="wardrobe-title">
+              {isSignedIn ? "Your Wardrobe:" : "Please sign in to see your wardrobe!"}
+            </h1>
           <div className="wardrobe-container">
-            <h1 className="wardrobe-title">Your Wardrobe:</h1>
-            <Card name="Red dress"></Card>
+            {wardrobe.length > 0 ? wardrobe : "Loading..."}
+            </div>
           </div>
         ): (
           <div className="wardrobe-container">

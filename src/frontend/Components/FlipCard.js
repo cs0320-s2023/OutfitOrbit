@@ -36,8 +36,7 @@ export default class Card extends React.Component {
           <Back 
           color={this.props.color}
           material={this.props.material}
-          type={this.props.type}
-          note={this.props.note}/>
+          type={this.props.type}/>
         </div>
   
       )
@@ -61,7 +60,8 @@ export default class Card extends React.Component {
             <p>Type: {this.props.type}</p>
             <p>Material: {this.props.material}</p>
             <p>Color: {this.props.color}</p>
-            <p>Note: {this.props.note}</p>
+            <p>Occasion: {this.props.occasion}</p>
+            <p>Brand: {this.props.brand}</p>
         </div>
       )
     }
