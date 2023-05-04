@@ -116,7 +116,9 @@ body::-webkit-scrollbar {
 }
 
 .wardrobe-title {
-  color: var(--navy-blue)
+  color: var(--navy-blue);
+  padding-left: 2rem;
+  padding-top: 2rem;
 }
 
 .form-control {
