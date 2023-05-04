@@ -54,44 +54,46 @@ function App() {
     /* Get the wardrobe for the current user */
     async function getWardrobe() {
       if (isSignedIn) { 
-        let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
-        // console.log(userData.wardrobe)
-        return userData;
+        try {
+          let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
+          return userData;
+        } catch (error) {
+          console.log(error);
+          return null; // or handle the error in some other way
+        }
       }
     }
     
     async function generateCard() {
-      if (isSignedIn) {
-        let userWardrobe = await getWardrobe();
-        let cards = userWardrobe.map((clothing) => {
-          return (
-            <Card 
-              key={clothing.id}
-              name={clothing.name}
-              type={clothing.type}
-              color={clothing.color}
-              material={clothing.material}
-              occasion={clothing.occasion}
-              brand={clothing.brand}
-            />
-          );
-        });
-        setWardrobe(cards);
-      }
-    }
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const wardrobe = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
-          setWardrobe(wardrobe || []);
-        } catch (error) {
-          console.log(error);
+      return new Promise(async (resolve) => {
+        if (isSignedIn) {
+          let userWardrobe = await getWardrobe();
+          let cards = userWardrobe.map((clothing) => {
+            return (
+              <Card 
+                key={clothing.id}
+                name={clothing.name}
+                type={clothing.type}
+                color={clothing.color}
+                material={clothing.material}
+                occasion={clothing.occasion}
+                brand={clothing.brand}
+              />
+            );
+          });
+          setWardrobe(cards);
         }
-      };
+        resolve();
+      });
+    }
     
-      fetchData();
-    }, []);
+    useEffect(() => {
+      const generateCardAsync = async () => {
+        console.log("USEFFECT CALLED")
+        await generateCard();
+      };
+      generateCardAsync();
+    }, [isSignedIn]);
     
 
 
