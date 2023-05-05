@@ -41,3 +41,13 @@
     height: 50px;
     border-radius: 20px;
   }
+
+  .Like_Button button{
+    font-size: 18px;
+    cursor: pointer;
+    border:none;
+    background: #E9E9E9;
+    text-align: center;
+    height: 50px;
+    border-radius: 20px;
+  }
