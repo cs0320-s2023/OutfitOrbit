@@ -1,19 +1,28 @@
 export class Clothing {
-  constructor(type, color, material, occassion, brand) {
+  constructor(name, type, color, material, occasion, brand) {
+    this.name = name;
     this.type = type;
     this.color = color; 
     this.material = material; 
-    this.occassion = occassion; 
+    this.occasion = occasion; 
     this.brand = brand;
   }
 
   toJSON() {
     return {
+      name: this.name,
       type: this.type,
-        color: this.color,
-        material: this.material,
-        occassion: this.occassion,
-        brand: this.brand,
+      color: this.color,
+      material: this.material,
+      occasion: this.occasion,
+      brand: this.brand
     };
+  }
+
+  jsonToClothingArray(jsonArray) {
+  return jsonArray.map(jsonObj => {
+    const { name, type, color, material, occasion, brand } = jsonObj;
+    return new Clothing(name, type, color, material, occasion, brand);
+  });
   }
 }

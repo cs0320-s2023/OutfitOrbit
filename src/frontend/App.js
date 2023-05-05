@@ -1,29 +1,32 @@
-import Navbar from './Components/Navbar';
+import Navbar from "./Components/Navbar";
 import Main from "../backend/Main";
-import { useState } from 'react';
-import Popup from './Components/Popup'
-import "./App.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { readFromDB } from '../backend/firebase'
-import Card from "./Components/FlipCard"
-import { Clothing } from '../backend/Clothing';
-import { addToWardrobe } from '../backend/firebase';
+import { useState, useEffect } from "react";
+import Popup from "./Components/Popup";
+import "./App.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { readFromDB } from "../backend/firebase";
+import Card from "./Components/FlipCard";
+import { Clothing } from "../backend/Clothing";
+import { addToWardrobe } from "../backend/firebase";
 
 function App() {
-
   // About states
   const [instructionsVisibility, setInstructionsVisibility] = useState(false);
   const [aboutVisibility, setAboutVisibility] = useState(false);
   const [addVisibility, setAddVisibility] = useState(false);
+  const [currentUserEmail, setCurrentUserEmail] = useState("");
 
 
   // Authentication states
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [wardrobe, setWardrobe] = useState([]);
+  const [recommendation, setRecommendation] = useState([]);
+  const [GPTresponse, setResponse] = useState(""); 
 
   // images
   const backgroundImg = require("../frontend/media/homepage_background_2.png");
-  const backgroundImgElem = document.getElementsByTagName('img'); // returns a collection
+  const backgroundImgElem = document.getElementsByTagName("img"); // returns a collection
 
   // Handling image animation against mouse
   function moveImage(e) {
@@ -33,186 +36,285 @@ function App() {
     const y = -(e.pageY + backgroundImgElem[0].offsetTop) / 50;
     positions.push({ x, y });
     const averageCount = 10;
-    if (positions.length > averageCount)
-      positions.splice(0, 1);
-      
-    const current = positions.reduce((acc, e) => { acc.x += e.x; acc.y += e.y; return acc }, { x: 0, y: 0 });
+    if (positions.length > averageCount) positions.splice(0, 1);
+
+    const current = positions.reduce(
+      (acc, e) => {
+        acc.x += e.x;
+        acc.y += e.y;
+        return acc;
+      },
+      { x: 0, y: 0 }
+    );
     current.x /= positions.length;
     current.y /= positions.length;
-    
+
     backgroundImgElem[0].style.transform = `translateX(${current.x}px) translateY(${current.y}px)`;
   }
 
-    // const handleInputChange = (event) => {
-    //   const { name, value } = event.target;
-    //   useState((prevProps) => ({
-    //     ...prevProps,
-    //     [name]: value,
-    //   }));
-    // };
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   useState((prevProps) => ({
+  //     ...prevProps,
+  //     [name]: value,
+  //   }));
+  // };
 
-    getWardrobe();
-
-    /* Get the wardrobe for the current user */
-    async function getWardrobe() {
-      if (isSignedIn) { 
-        let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
-        // console.log(userData.wardrobe[0].type)
-        return userData.wardrobe;
+  /* Get the wardrobe for the current user */
+  async function getWardrobe() {
+    if (isSignedIn && localStorage.getItem("wardrobe")) {
+      try {
+        let userData = await readFromDB(
+          "wardrobeDB",
+          "email",
+          localStorage.getItem("email")
+        );
+        setCurrentUserEmail(localStorage.getItem("email"));
+        return userData;
+      } catch (error) {
+        console.log(error);
+        return null; // or handle the error in some other way
       }
     }
+  }
 
-    function handleSubmit(event) {
+  async function generateCard(userWardrobe, setCards) {
+    return new Promise(async (resolve) => {
+      if (isSignedIn) {
+        // let userWardrobe = await getWardrobe();
+        let cards = userWardrobe.map((clothing) => {
+          return (
+            <Card
+              key={clothing.id}
+              name={clothing.name}
+              type={clothing.type}
+              color={clothing.color}
+              material={clothing.material}
+              brand={clothing.brand}
+              occasion={clothing.occasion}
+            />
+          );
+        });
+        setCards(cards);
+      }
+      resolve();
+    });
+  }
+
+  useEffect(() => {
+    const generateCardAsync = async () => {
+      let userWardrobe = await getWardrobe();
+      await generateCard(userWardrobe, setWardrobe);
+    };
+
+    if (isSignedIn) {
+      generateCardAsync();
+    }
+  }, [isSignedIn]);
+
+  useEffect(() => {
+    const generateCardAsync = async () => {
+      const card = null; 
+      let JSONWardrobe = JSON.parse(GPTresponse);
+      await generateCard(JSONWardrobe, setRecommendation);
+    };
+    generateCardAsync();
+  }, [GPTresponse]);
+
+
+  function handleSubmit(event) {
       event.preventDefault(); // prevent the form from submitting
     
       // get the values of each input box
-      const brand = event.target.elements.brand.value;
+      //const name = event.target.elements.name.value;
       const type = event.target.elements.type.value;
       const colour = event.target.elements.colour.value;
       const material = event.target.elements.material.value;
       const occasion = event.target.elements.occasion.value;
+      const brand = event.target.elements.brand.value;
+      const name = event.target.elements.name.value;
     
       // create a new Clothing item with the fields provided
-      addToWardrobe(new Clothing(type, colour, material, occasion, brand));
-    }    
+      const newItem = new Clothing(name, type, colour, material, occasion, brand);
+      addToWardrobe(newItem);
+  }
 
-    return (
-      <div className="grid-container">
-        <div className="navbar-container">
-          <Navbar
-            setInstructionsVisibility={setInstructionsVisibility}
-            setAboutVisibility={setAboutVisibility}
-            setAddVisibility={setAddVisibility}
-            setIsSignedIn={setIsSignedIn}
-            isSignedIn={isSignedIn} 
-          ></Navbar>
-        </div>
-
-        <div className="image-container" onMouseMove={(e) => moveImage(e)}>
-          <img src={backgroundImg}></img>
-          <h1>
-            <span className="outfit-title">Outfit</span>{" "}
-            <span className="orbit-title">Orbit</span>
-          </h1>
-          <Popup trigger={instructionsVisibility}>
-            <h1 className="instructions-title">Intructions</h1>
-            <FontAwesomeIcon
-              onClick={() => {
-                setInstructionsVisibility(false);
-              }}
-              icon={faXmark}
-              className="x-mark fa-2x"
-            />
-            <h2>
-              {" "}
-              Navigate to your digital wardrobe and select the type of outfit
-              you would like from the given options!
-            </h2>
-          </Popup>
-          <Popup trigger={aboutVisibility}>
-            <h1 className="instructions-title">About us</h1>
-            <FontAwesomeIcon
-              onClick={() => {
-                setAboutVisibility(false);
-              }}
-              icon={faXmark}
-              className="x-mark fa-2x"
-            />
-            <div className="row">
-              <div className="column">
-                <h2>
-                  We are Outfit Orbit. Comitted to helping the environment by
-                  taking your outfits to the next level.
-                </h2>
-              </div>
-            </div>
-          </Popup>
-          <Popup trigger={addVisibility}>
-            <h1 className="instructions-title">Add Clothing to your Closet!</h1>
-            <FontAwesomeIcon
-              onClick={() => {
-                setAddVisibility(false);
-              }}
-              icon={faXmark}
-              className="x-mark fa-2x"
-            />
-            <div className="row">
-              <div className="column">
-                <h2>
-                  Using the form below, add an article of clothing from your
-                  closet into your own virtual wardrobe!
-                </h2>
-                <form onSubmit={handleSubmit}>
-                  <div className="form-control">
-                    <label>Brand</label> <br />
-                    <input
-                      type="text"
-                      name="brand"
-                      // value={state.email}
-                      // onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-control">
-                    <label>Type</label><br />
-                    <input
-                      type="text"
-                      name="type"
-                      // value={state.password}
-                      // onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-control">
-                    <label>Colour</label><br />
-                    <input
-                      type="text"
-                      name="colour"
-                      // value={state.password}
-                      // onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-control">
-                    <label>Material</label><br />
-                    <input
-                      type="text"
-                      name="material"
-                      // value={state.password}
-                      // onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-control">
-                    <label>Occasion</label><br />
-                    <input
-                      type="text"
-                      name="occasion"
-                      // value={state.password}
-                      // onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-control"><br />
-                    <label></label>
-                    <button type="submit">Submit</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </Popup>
-        </div>
-        <div className="generator-container">
-          <Main></Main>
-        </div>
-        {/* Conditional rendering, wardrobe only appears when signed in */}
-        {isSignedIn ? (
-          <div className="wardrobe-container">
-            <h1 className="wardrobe-title">Your Wardrobe:</h1>
-            <Card name="Red dress"></Card>
-          </div>
-        ): (
-          <div className="wardrobe-container">
-            <h1 className="wardrobe-title"> Please sign in to see your wardrobe!</h1>
-          </div>
-        )
-        }
+  return (
+    <div className="grid-container">
+      <div className="navbar-container">
+        <Navbar
+          setInstructionsVisibility={setInstructionsVisibility}
+          setAboutVisibility={setAboutVisibility}
+          setAddVisibility={setAddVisibility}
+          setIsSignedIn={setIsSignedIn}
+          isSignedIn={isSignedIn}
+        ></Navbar>
       </div>
-    );
-};
+
+      <div className="image-container" onMouseMove={(e) => moveImage(e)}>
+        <img src={backgroundImg}></img>
+        <h1>
+          <span className="outfit-title">Outfit</span>{" "}
+          <span className="orbit-title">Orbit</span>
+        </h1>
+        <Popup trigger={instructionsVisibility}>
+          <h1 className="instructions-title">Intructions</h1>
+          <FontAwesomeIcon
+            onClick={() => {
+              setInstructionsVisibility(false);
+            }}
+            icon={faXmark}
+            className="x-mark fa-2x"
+          />
+          <h2>
+            {" "}
+            Navigate to your digital wardrobe and select the type of outfit you
+            would like from the given options!
+          </h2>
+        </Popup>
+        <Popup trigger={aboutVisibility}>
+          <h1 className="instructions-title">About us</h1>
+          <FontAwesomeIcon
+            onClick={() => {
+              setAboutVisibility(false);
+            }}
+            icon={faXmark}
+            className="x-mark fa-2x"
+          />
+          <div className="row">
+            <div className="column">
+              <h2>
+                We are Outfit Orbit. Comitted to helping the environment by
+                taking your outfits to the next level.
+              </h2>
+            </div>
+          </div>
+        </Popup>
+        <Popup trigger={addVisibility}>
+          <h1 className="instructions-title">Add Clothing to your Closet!</h1>
+          <FontAwesomeIcon
+            onClick={() => {
+              setAddVisibility(false);
+            }}
+            icon={faXmark}
+            className="x-mark fa-2x"
+          />
+          <div className="row">
+            <div className="column">
+              <form onSubmit={handleSubmit}>
+                <div className="form-control">
+                  <label>Name</label> <br />
+                  <input
+                    type="text"
+                    name="name"
+                    />
+                  </div>
+                <div className="form-control">
+                  <label>Brand</label> <br />
+                  <input
+                    type="text"
+                    name="brand"
+                    // value={state.email}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-control">
+                  <label>Type</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="type"
+                    // value={state.password}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-control">
+                  <label>Colour</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="colour"
+                    // value={state.password}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-control">
+                  <label>Material</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="material"
+                    // value={state.password}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-control">
+                  <label>Occasion</label>
+                  <br />
+                  <input
+                    type="text"
+                    name="occasion"
+                    // value={state.password}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-control">
+                  <br />
+                  <label></label>
+                  <button type="submit">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </Popup>
+      </div>
+      <div className="generator-container">
+        <Main
+          currentUserEmail={currentUserEmail}
+          setCurrentUserEmail={setCurrentUserEmail}
+          GPTresponse={GPTresponse}
+          setResponse={setResponse}
+        />
+      </div>
+      {isSignedIn && GPTresponse && (
+        <div>
+          <h1 className="wardrobe-title">Your Outfit Selection</h1>
+          <div className="wardrobe-container">
+            {recommendation.length > 0 ? recommendation
+             : "Enter a prompt for a personalized recommendation"}
+          </div>
+        </div>
+      )}
+
+      {!isSignedIn && (
+        <div className="wardrobe-container">
+          <h1 className="wardrobe-title">
+            Please log in to see personalised recommendations
+          </h1>
+        </div>
+      )}
+      {/* Conditional rendering, wardrobe only appears when signed in */}
+      {isSignedIn ? (
+        <div>
+          <h1 className="wardrobe-title">
+            {isSignedIn
+              ? "Your Wardrobe:"
+              : "Please log in to see your wardrobe!"}
+          </h1>
+          <div className="wardrobe-container">
+            {wardrobe.length > 0 ? wardrobe : "Loading... Please refresh the page if screen persists"}
+          </div>
+        </div>
+      ) : (
+        <div className="wardrobe-container">
+          <h1 className="wardrobe-title">
+            {" "}
+            Please log in to see your wardrobe!
+          </h1>
+        </div>
+      )}
+    </div>
+  );
+
+}
 export default App;
