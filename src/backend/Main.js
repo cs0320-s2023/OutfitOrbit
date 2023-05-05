@@ -4,10 +4,12 @@ import "./Main.css";
 import { jsonToClothingArray } from "./Clothing.js"
 
 export const TEXT_try_button_accessible_name = "try your sequence";
+export const TEXT_like_button_accessible_name = "click this button if you like the outfit!";
 export const TEXT_number_1_accessible_name = "first number in sequence";
 export const TEXT_number_2_accessible_name = "second number in sequence";
 export const TEXT_number_3_accessible_name = "third number in sequence";
 export const TEXT_try_button_text = "Try it!";
+export const TEXT_like_button_text = "Like <3";
 
 function ControlledInput({ value, setValue, ariaLabel }) {
   return (
@@ -63,6 +65,20 @@ function NewRound({ addGuess }) {
           {TEXT_try_button_text}
         </button>
       </div>
+
+      <div className="Like_Button">
+        <button
+          onClick={() => {
+            addGuess(value0);
+            setValue0("");
+          }}
+          aria-label={TEXT_like_button_accessible_name}
+        >
+          {/* The text displayed on the button */}
+          {TEXT_like_button_text}
+        </button>
+      </div>
+
     </div>
   );
 }
