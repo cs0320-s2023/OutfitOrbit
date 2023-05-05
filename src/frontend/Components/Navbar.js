@@ -1,13 +1,10 @@
 import React, { useEffect, useState }from 'react';
 import ReactDOM from 'react-dom';
-import jwt_decode from "jwt-decode";
 import './Navbar.css'
-import CLIENT_ID from '../private/auth.tsx';
 import { signInWithGoogle, signOutGoogle, createWardrobeDB } from '../../backend/firebase.js'
+import { prodErrorMap } from '@firebase/auth';
 
 function Navbar( props ) {
-    const [currentUser, setCurrentUser] = useState({}); // TODO: change for firebase database
-    const [isSignedIn, setSignedIn] = useState(false);
     const navElem = document.getElementsByClassName("navbar");
     const navbarLinks = document.getElementsByClassName("navbar-links");
     const navbarLinksList = document.getElementsByTagName("li")
@@ -20,21 +17,21 @@ function Navbar( props ) {
     window.addEventListener("scroll", animateNavbar);
 
     function handleSignIn() {
-      if (!isSignedIn) {
+      if (!props.isSignedIn) {
         signInWithGoogle();
         username = localStorage.getItem('name');
         userEmail = localStorage.getItem('email');
         createWardrobeDB(username, userEmail, undefined);
-        setSignedIn(true);
+        props.setIsSignedIn(true);
       } 
     }
 
     function handleSignOut() {
-      if (isSignedIn) {
+      if (props.isSignedIn) {
         signOutGoogle();
         localStorage.setItem("name", "");
         localStorage.setItem("email", "");
-        setSignedIn(false);
+        props.setIsSignedIn(false);
       } 
     }
 
@@ -66,6 +63,10 @@ function Navbar( props ) {
         props.setAboutVisibility(true);
     }
 
+    function popUpAdd() {
+      props.setAddVisibility(true); 
+    }
+
     function smoothScroll(id) {
         document.getElementById(id).scrollIntoView({behavior: "smooth"});
     }
@@ -87,25 +88,35 @@ function Navbar( props ) {
         </a>
         <div className="navbar-links">
           <ul className="navbar-links-list">
-            {/* <li><a onClick={smoothScroll("navbar")}>Home</a></li> */}
             <li>
               <a onClick={popUpInstructions}>Instructions</a>
             </li>
             <li>
               <a onClick={popUpAbout}>About</a>
             </li>
-              <li>
-                {isSignedIn &&
-                  <a><button id="signOutButton" onClick={handleSignOut}>Sign out</button></a>
-                }
-                {!isSignedIn &&
-                  <a><button id="signInButton" onClick={handleSignIn}>Sign in</button></a>
-                }
-              </li>
+            <li>
+              {props.isSignedIn && <a onClick={popUpAdd}>Add To Closet</a>}
+            </li>
+            <li>
+              {props.isSignedIn && (
+                <a>
+                  <button id="signOutButton" onClick={handleSignOut}>
+                    Sign out
+                  </button>
+                </a>
+              )}
+              {!props.isSignedIn && (
+                <a>
+                  <button id="signInButton" onClick={handleSignIn}>
+                    Sign in
+                  </button>
+                </a>
+              )}
+            </li>
           </ul>
         </div>
       </nav>
     );
 }
 
-export default Navbar
+export default Navbar;

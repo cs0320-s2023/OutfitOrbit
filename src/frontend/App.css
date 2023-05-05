@@ -39,7 +39,8 @@ body::-webkit-scrollbar {
   grid-template-areas: 
   "navbar"
   "image"
-  "generator";
+  "generator"
+  "wardobe";
   grid-template-columns: 1fr;
 }
 
@@ -52,6 +53,7 @@ body::-webkit-scrollbar {
 }
 
 .image-container {
+  z-index: 1;
   grid-area: image;
   display: flex;
   position: relative;
@@ -69,7 +71,7 @@ body::-webkit-scrollbar {
   position: absolute;
   width: auto;
   top: 5%;
-  height: 120%;
+  height: 90%;
   object-fit: cover;
   max-width: 100vw;
 }
@@ -79,7 +81,7 @@ body::-webkit-scrollbar {
   top: 30%;
   width:100%;
   text-align: center;
-  font-size: 120px;
+  font-size: 90px;
   color:#FFEECA;
 }
 
@@ -100,4 +102,24 @@ body::-webkit-scrollbar {
   background-color: white;
   width: 50vw;
   height: 70vh;
+}
+
+.wardrobe-container {
+  z-index: 2;
+  display: flexbox;
+  justify-content: center;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100vw;
+  height: 80vh;
+}
+
+.wardrobe-title {
+  color: var(--navy-blue)
+}
+
+.form-control {
+  padding: 10px;
+  color: var(--dusty-rose);
 }

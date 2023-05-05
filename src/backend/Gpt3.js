@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 import OPEN_API_KEY from "./private/token.tsx";
 
 const configuration = new Configuration({
-  apiKey: OPEN_API_KEY,
+  apiKey: "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",
 });
 
 const openai = new OpenAIApi(configuration);

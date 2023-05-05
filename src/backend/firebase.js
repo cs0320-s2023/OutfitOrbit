@@ -5,6 +5,7 @@ import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
 import { doc, setDoc, addDoc, query, where} from "firebase/firestore"; 
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "./private/firebase.tsx"
+import { Clothing } from "./Clothing";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,7 +24,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(firebaseApp);
 const provider = new GoogleAuthProvider();
 export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
@@ -31,7 +31,7 @@ export const db = getFirestore(firebaseApp);
 export const signInWithGoogle = () => {signInWithPopup(auth, provider)
    //signInWithPopup(auth, new GoogleAuthProvider())
    .then((result) => {
-     // This gives you a Google Access Token. You can use it to access the Google API.
+    // This gives you a Google Access Token. You can use it to access the Google API.
     // const credential = GoogleAuthProvider.credentialFromResult(result);
     // const token = credential.accessToken;
     // The signed-in user info.
@@ -45,11 +45,13 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
     const userData = {
       name: name,
       email: email,
+      wardrobe: [new Clothing("shirt", "color", "cotton", "casual", "zara")],
     };
 
     localStorage.setItem("name", userData.name);
     localStorage.setItem("email", userData.email);
-    createWardrobeDB(userData.name, userData.email);
+    localStorage.setItem("wardrobe", userData.wardrobe);
+    createWardrobeDB(userData.name, userData.email, userData.wardrobe);
 
   }).catch((error) => {
     console.log(error)
@@ -65,7 +67,6 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
 
 export const signOutGoogle = () => {
   signOut(auth).then(() => {
-    console.log("signed out")
     // Sign-out successful.
   }).catch((error) => {
     // An error happened.
@@ -73,33 +74,48 @@ export const signOutGoogle = () => {
   });
 }
 
-
 /* Class to represent our database */
 export class WardrobeDB {
-  constructor (name, email) { //! to add wardrobe component
-      this.name = name;
-      this.email = email;
+  constructor(name, email, wardrobe = []) {
+    this.name = name;
+    this.email = email;
+    this.wardrobe = wardrobe;
   }
   toString() {
-      return this.name + ', ' + this.email;
+    return this.name + ", " + this.email;
   }
 }
 
 const wardrobeConverter = {
   toFirestore: (wardrobeDB) => {
-      return {
-          name: wardrobeDB.name,
-          email: wardrobeDB.email,
-          };
+    const data = {
+      name: wardrobeDB.name,
+      email: wardrobeDB.email,
+      wardrobe: wardrobeDB.wardrobe
+        ? wardrobeDB.wardrobe.map((clothing) => clothing.toJSON())
+        : null,
+    };
+    // Remove any undefined values from the data object
+    return data;
   },
   fromFirestore: (snapshot, options) => {
-      const data = snapshot.data(options);
-      return new WardrobeDB(data.name, data.email);
-  }
+    const data = snapshot.data(options);
+    const wardrobe = data.wardrobe.map((clothing) => {
+      return new Clothing(
+        clothing.type,
+        clothing.color,
+        clothing.material,
+        clothing.occasion,
+        clothing.brand,
+      );
+    });
+    return new WardrobeDB(data.name, data.email, wardrobe);
+  },
 };
 
 /* Create a wardrobe database storage in firebase */
-export async function createWardrobeDB(name, email) {
+export async function createWardrobeDB(name, email, wardrobe = []) {
+
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
   );
@@ -110,14 +126,50 @@ export async function createWardrobeDB(name, email) {
 
   /* If user does not exist then add it to the database, otherwise do not */
   if (querySnapshot.empty) {
-    await addDoc(wardrobeCollectionRef, new WardrobeDB(name, email));
-    console.log("Data saved to Firestore:", name, email);
+    await addDoc(
+      wardrobeCollectionRef,
+      new WardrobeDB(name, email, wardrobe)
+    );
+    console.log("Data saved to Firestore:", name, email, wardrobe);
   } else {
     console.log(querySnapshot)
     console.log("User already exists in Firestore:", email);
   }
+  // readFromDB("wardrobeDB", "email", email); //! uncomment to print out wardrobe
 }
 
-export async function readFromDB() {
-  
+export function addToWardrobe(item) {
+  // Get the current wardrobe from localStorage
+  const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")); //this isn't a JSON, which is causing errors
+
+  // Add the new item to the wardrobe
+  currentWardrobe.push(item);
+
+  // Update the localStorage with the new wardrobe
+  localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe));
+
+  // Update the wardrobe in the database
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("email");
+  createWardrobeDB(name, email, currentWardrobe);
 }
+
+
+/* Generalized function reads from database and calls a function on the results */
+//? Can add a callback function as an argument to be exectued passing in the results into the callback
+export async function readFromDB(collectionName, field, value) {
+  const collectionRef = collection(db, collectionName);
+
+  const querySnapshot = await getDocs(
+    query(collectionRef, where(field, "==", value))
+  );
+
+  if (!querySnapshot.empty) {
+    const results = querySnapshot.docs.map(doc => doc.data());
+    return results[0]; // only one user with email so always 0 value
+  } else {
+    console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
+    return null; //! Can we return something more useful than null?
+  }
+}
+

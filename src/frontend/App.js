@@ -5,15 +5,25 @@ import Popup from './Components/Popup'
 import "./App.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import { readFromDB } from '../backend/firebase'
+import Card from "./Components/FlipCard"
+import { Clothing } from '../backend/Clothing';
+import { addToWardrobe } from '../backend/firebase';
 
 function App() {
 
+  // About states
   const [instructionsVisibility, setInstructionsVisibility] = useState(false);
   const [aboutVisibility, setAboutVisibility] = useState(false);
+  const [addVisibility, setAddVisibility] = useState(false);
 
+
+  // Authentication states
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  // images
   const backgroundImg = require("../frontend/media/homepage_background_2.png");
   const backgroundImgElem = document.getElementsByTagName('img'); // returns a collection
-
 
   // Handling image animation against mouse
   function moveImage(e) {
@@ -33,12 +43,48 @@ function App() {
     backgroundImgElem[0].style.transform = `translateX(${current.x}px) translateY(${current.y}px)`;
   }
 
+    // const handleInputChange = (event) => {
+    //   const { name, value } = event.target;
+    //   useState((prevProps) => ({
+    //     ...prevProps,
+    //     [name]: value,
+    //   }));
+    // };
+
+    getWardrobe();
+
+    /* Get the wardrobe for the current user */
+    async function getWardrobe() {
+      if (isSignedIn) { 
+        let userData = await readFromDB("wardrobeDB", "email", localStorage.getItem("email"));
+        // console.log(userData.wardrobe[0].type)
+        return userData.wardrobe;
+      }
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault(); // prevent the form from submitting
+    
+      // get the values of each input box
+      const brand = event.target.elements.brand.value;
+      const type = event.target.elements.type.value;
+      const colour = event.target.elements.colour.value;
+      const material = event.target.elements.material.value;
+      const occasion = event.target.elements.occasion.value;
+    
+      // create a new Clothing item with the fields provided
+      addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+    }    
+
     return (
       <div className="grid-container">
         <div className="navbar-container">
           <Navbar
             setInstructionsVisibility={setInstructionsVisibility}
             setAboutVisibility={setAboutVisibility}
+            setAddVisibility={setAddVisibility}
+            setIsSignedIn={setIsSignedIn}
+            isSignedIn={isSignedIn} 
           ></Navbar>
         </div>
 
@@ -81,11 +127,92 @@ function App() {
               </div>
             </div>
           </Popup>
+          <Popup trigger={addVisibility}>
+            <h1 className="instructions-title">Add Clothing to your Closet!</h1>
+            <FontAwesomeIcon
+              onClick={() => {
+                setAddVisibility(false);
+              }}
+              icon={faXmark}
+              className="x-mark fa-2x"
+            />
+            <div className="row">
+              <div className="column">
+                <h2>
+                  Using the form below, add an article of clothing from your
+                  closet into your own virtual wardrobe!
+                </h2>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-control">
+                    <label>Brand</label> <br />
+                    <input
+                      type="text"
+                      name="brand"
+                      // value={state.email}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Type</label><br />
+                    <input
+                      type="text"
+                      name="type"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Colour</label><br />
+                    <input
+                      type="text"
+                      name="colour"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Material</label><br />
+                    <input
+                      type="text"
+                      name="material"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label>Occasion</label><br />
+                    <input
+                      type="text"
+                      name="occasion"
+                      // value={state.password}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control"><br />
+                    <label></label>
+                    <button type="submit">Submit</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </Popup>
         </div>
         <div className="generator-container">
           <Main></Main>
         </div>
+        {/* Conditional rendering, wardrobe only appears when signed in */}
+        {isSignedIn ? (
+          <div className="wardrobe-container">
+            <h1 className="wardrobe-title">Your Wardrobe:</h1>
+            <Card name="Red dress"></Card>
+          </div>
+        ): (
+          <div className="wardrobe-container">
+            <h1 className="wardrobe-title"> Please sign in to see your wardrobe!</h1>
+          </div>
+        )
+        }
       </div>
     );
-}
+};
 export default App;
