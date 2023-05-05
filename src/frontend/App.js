@@ -82,9 +82,6 @@ function App() {
       if (isSignedIn) {
         // let userWardrobe = await getWardrobe();
         let cards = userWardrobe.map((clothing) => {
-          console.log("ISSUE HERE")
-          console.log(clothing.occasion);
-          console.log(clothing.brand);
           return (
             <Card
               key={clothing.id}
@@ -105,7 +102,6 @@ function App() {
 
   useEffect(() => {
     const generateCardAsync = async () => {
-      console.log("USEEFFECT - SIGNED IN");
       let userWardrobe = await getWardrobe();
       await generateCard(userWardrobe, setWardrobe);
     };
@@ -118,7 +114,6 @@ function App() {
   useEffect(() => {
     const generateCardAsync = async () => {
       const card = null; 
-      console.log("USEEFFECT - RESPONSE PARAM");
       let JSONWardrobe = JSON.parse(GPTresponse);
       await generateCard(JSONWardrobe, setRecommendation);
     };
@@ -131,19 +126,17 @@ function App() {
     
       // get the values of each input box
       //const name = event.target.elements.name.value;
-      const brand = event.target.elements.brand.value;
       const type = event.target.elements.type.value;
       const colour = event.target.elements.colour.value;
       const material = event.target.elements.material.value;
       const occasion = event.target.elements.occasion.value;
+      const brand = event.target.elements.brand.value;
+      const name = event.target.elements.name.value;
     
       // create a new Clothing item with the fields provided
-      const newItem = new Clothing(type, colour, material, occasion, brand);
+      const newItem = new Clothing(name, type, colour, material, occasion, brand);
       addToWardrobe(newItem);
-  }    
-
-    // create a new Clothing item with the fields provided
-    // addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+  }
 
   return (
     <div className="grid-container">
@@ -208,6 +201,13 @@ function App() {
           <div className="row">
             <div className="column">
               <form onSubmit={handleSubmit}>
+                <div className="form-control">
+                  <label>Name</label> <br />
+                  <input
+                    type="text"
+                    name="name"
+                    />
+                  </div>
                 <div className="form-control">
                   <label>Brand</label> <br />
                   <input

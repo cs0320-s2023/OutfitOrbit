@@ -3,9 +3,9 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
-import { doc, setDoc, addDoc, query, where, updateDoc} from "firebase/firestore"; 
+import { doc, setDoc, addDoc, query, where, updateDoc, arrayUnion, arrayRemove} from "firebase/firestore"; 
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "./private/firebase.tsx"
-import { Clothing } from "./Clothing";
+import { Clothing } from "./Clothing";;
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -93,7 +93,6 @@ const wardrobeConverter = {
         ? wardrobeDB.wardrobe.map((clothing) => {
     
             if (!(clothing instanceof Clothing)) {
-              console.log('Invalid wardrobe item', clothing.name);
               // Manually create a new Clothing object with the correct properties
               const convertedClothing = new Clothing(
                   clothing.name,
@@ -104,11 +103,6 @@ const wardrobeConverter = {
                   clothing.brand
               );
               clothing = convertedClothing; // overwrite the original object with the new object
-
-              // console.error('Invalid wardrobe item:', clothing.name);
-              // throw new Error('Invalid wardrobe item');
-
-              console.log(clothing instanceof Clothing)
             }
             return clothing.toJSON();
           })
@@ -145,23 +139,19 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   
   /* If user does not exist then add it to the database, otherwise do not */
   if (querySnapshot.empty && localStorage.getItem("wardrobe").length != 0) {
-    //console.log(name, email, wardrobe)
     await addDoc(
       wardrobeCollectionRef,
       new WardrobeDB(name, email, wardrobe)
     );
     console.log("Data saved to Firestore:", name, email, wardrobe);
   } else {
-    console.log("User already exists in Firestore, updating wardrobe:", email);
     const docRef = querySnapshot.docs[0].ref;
-    console.log("Wardrobe to update:", wardrobe);
     if (wardrobe && wardrobe.length > 0) {
       const wardrobeData = wardrobeConverter.toFirestore({
         name: name,
         email: email,
         wardrobe: wardrobe,
       });
-      console.log(wardrobeData === undefined);
       await updateDoc(docRef, wardrobeData); //basically this is saying that wardrobeData is undefined but its not?
       console.log("Wardrobe updated in Firestore:", email, wardrobe);
     } else {
@@ -170,74 +160,43 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   }
 }
 
-export function addToWardrobe(item) { 
-  // Get the current wardrobe from localStorage 
-  const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || []; 
-  
-  // Convert each item to a Clothing instance
-  const wardrobe = currentWardrobe.map((clothing) => {
-    return new Clothing(
-      clothing.name,
-      clothing.type,
-      clothing.color,
-      clothing.material,
-      clothing.occasion,
-      clothing.brand
-    );
-  });
+export async function addToWardrobe(item) {
+  console.log("WARDROBE ITEM: ");
+  console.log(item);
+  const currentWardrobe = item.toJSON();
 
-  // Add the new item to the wardrobe 
-  wardrobe.push(item); 
+  console.log("TRASNFORMED")
+  console.log(currentWardrobe)
   
-  // Update the localStorage with the new wardrobe 
-  localStorage.setItem("wardrobe", JSON.stringify(wardrobe)); 
-  
-  // Update the wardrobe in the database 
-  const name = localStorage.getItem("name"); 
-  const email = localStorage.getItem("email"); 
-  createWardrobeDB(name, email, wardrobe); 
+  // Update the wardrobe in the localStorage
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("email");
+
+  const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
+    wardrobeConverter
+  );
+
+  const querySnapshot = await getDocs(
+    query(wardrobeCollectionRef, where("email", "==", email))
+  );
+
+  if (!querySnapshot.empty) {
+    console.log("WARDROBE IS NOT EMPTY")
+    console.log(querySnapshot)
+    // If the wardrobe already exists in Firebase, update it with the new item
+    const wardrobeDocRef = querySnapshot.docs[0].ref;
+    await updateDoc(wardrobeDocRef, {wardrobe: arrayUnion(currentWardrobe)});
+
+  } else {
+    // If the wardrobe does not exist in Firebase, create a new wardrobe document with the current item
+    // await wardrobeRef.set({ name: name, items: [item] });
+    console.log("WARDROBE DOES NOT EXIST")
+    createWardrobeDB(name, email, currentWardrobe);
+  }
+
+  // Update the local storage with the new wardrobe
+  // localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe.concat(item)));
 }
-
-
-// export function addToWardrobe(item) { 
-//   // Get the current wardrobe from localStorage 
-//   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || []; 
-  
-//   console.log('hi hello', currentWardrobe);
-//   // Add the new item to the wardrobe 
-//   currentWardrobe.push(item); 
-  
-//   // Update the localStorage with the new wardrobe 
-//   localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe)); 
-  
-//   // Update the wardrobe in the database 
-//   const name = localStorage.getItem("name"); 
-//   const email = localStorage.getItem("email"); 
-//   createWardrobeDB(name, email, currentWardrobe); 
-// }
-
-// export async function addToWardrobe(item) {
-//   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
-
-//   // Update the wardrobe in Firebase
-//   const name = localStorage.getItem("name");
-//   const email = localStorage.getItem("email");
-
-//   const wardrobeRef = db.collection("users").doc(email).collection("wardrobes").doc(name);
-//   const wardrobeDoc = await wardrobeRef.get();
-
-//   if (wardrobeDoc.exists) {
-//     // If the wardrobe already exists in Firebase, update it with the new item
-//     const updatedWardrobe = [...currentWardrobe, item];
-//     await wardrobeRef.update({ items: updatedWardrobe });
-//   } else {
-//     // If the wardrobe does not exist in Firebase, create a new wardrobe document with the current item
-//     await wardrobeRef.set({ name: name, items: [item] });
-//   }
-
-//   // Update the local storage with the new wardrobe
-//   localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe.concat(item)));
-// }
 
 
 /* Generalized function reads from database and calls a function on the results */
@@ -248,12 +207,8 @@ export async function readFromDB(collectionName, field, value) {
     query(collectionRef, where(field, "==", value))
   );
 
-  console.log(querySnapshot);
-
   if (!querySnapshot.empty) {
-    console.log("NOT EMPTY")
     const results = querySnapshot.docs.map(doc => doc.data());
-    console.log(typeof(results[0].wardrobe))
     return results[0].wardrobe; // only one user with email so always 0 value
   } else {
     console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
