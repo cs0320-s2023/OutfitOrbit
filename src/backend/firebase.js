@@ -139,6 +139,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   
   /* If user does not exist then add it to the database, otherwise do not */
   if (querySnapshot.empty && localStorage.getItem("wardrobe").length != 0) {
+    console.log("empty wardrobe here wallahi")
     await addDoc(
       wardrobeCollectionRef,
       new WardrobeDB(name, email, wardrobe)
@@ -152,7 +153,6 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
         email: email,
         wardrobe: wardrobe,
       });
-      await updateDoc(docRef, wardrobeData); //basically this is saying that wardrobeData is undefined but its not?
       console.log("Wardrobe updated in Firestore:", email, wardrobe);
     } else {
       console.log("Wardrobe is empty or undefined, skipping update to Firestore");
@@ -181,21 +181,14 @@ export async function addToWardrobe(item) {
   );
 
   if (!querySnapshot.empty) {
-    console.log("WARDROBE IS NOT EMPTY")
     console.log(querySnapshot)
     // If the wardrobe already exists in Firebase, update it with the new item
     const wardrobeDocRef = querySnapshot.docs[0].ref;
     await updateDoc(wardrobeDocRef, {wardrobe: arrayUnion(currentWardrobe)});
 
   } else {
-    // If the wardrobe does not exist in Firebase, create a new wardrobe document with the current item
-    // await wardrobeRef.set({ name: name, items: [item] });
-    console.log("WARDROBE DOES NOT EXIST")
     createWardrobeDB(name, email, currentWardrobe);
   }
-
-  // Update the local storage with the new wardrobe
-  // localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe.concat(item)));
 }
 
 
