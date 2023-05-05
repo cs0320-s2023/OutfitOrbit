@@ -38,10 +38,10 @@ describe("Firebase Utils", () => {
       const wardrobe = [new Clothing("shirt", "color", "cotton", "casual", "zara")];
       
       // add user to Firestore database
-      await createWardrobeDB(name, email, wardrobe);
+      await createWardrobeDB(name, email, wardrobe); //tentative, how do we create our wardrobes -anastasio
       
       // check that user was added to Firestore database
-      const wardrobeCollectionRef = collection(db, "wardrobeDB");
+      const wardrobeCollectionRef = collection(db, "wardrobeDB");git
       const querySnapshot = await getDocs(query(wardrobeCollectionRef, where("email", "==", email)));
       expect(querySnapshot.docs.length).toEqual(1);
       expect(querySnapshot.docs[0].data()).toEqual(new WardrobeDB(name, email, wardrobe));
