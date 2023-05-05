@@ -3,7 +3,7 @@ import OPEN_API_KEY from "./private/token.tsx";
 import { readFromDB} from "./firebase.js";
 
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: OPEN_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
@@ -14,7 +14,7 @@ export default async function Gpt3(email, word1) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: "Create an outfit using only the following pieces: " + stringWardrobe +  "with the following description: " + word1 + "return an" 
-    + "array of an object with the fields material, occasion, color, type, brand and name in that order and in the same format as they were inputted",
+    + "array with objects with the fields material, occasion, color, type, brand and name in that order and in a JSON format",
     max_tokens: 3500,
   });
   console.log(completion.data.choices[0].text);

@@ -89,18 +89,17 @@ const wardrobeConverter = {
     const data = {
       name: wardrobeDB.name,
       email: wardrobeDB.email,
-      wardrobe: wardrobeDB.wardrobe
+      wardrobe: Array.isArray(wardrobeDB.wardrobe)
         ? wardrobeDB.wardrobe.map((clothing) => {
-    
             if (!(clothing instanceof Clothing)) {
               // Manually create a new Clothing object with the correct properties
               const convertedClothing = new Clothing(
-                  clothing.name,
-                  clothing.type,
-                  clothing.color,
-                  clothing.material,
-                  clothing.occasion,
-                  clothing.brand
+                clothing.name,
+                clothing.type,
+                clothing.color,
+                clothing.material,
+                clothing.occasion,
+                clothing.brand
               );
               clothing = convertedClothing; // overwrite the original object with the new object
             }
