@@ -20,6 +20,7 @@ function App() {
   // Authentication states
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [wardrobe, setWardrobe] = useState([]);
+  const [recommendation, setRecommendation] = useState([]);
   const [GPTresponse, setResponse] = useState(""); 
 
   // images
@@ -76,7 +77,7 @@ function App() {
     }
   }
 
-  async function generateCard(userWardrobe) {
+  async function generateCard(userWardrobe, setCards) {
     return new Promise(async (resolve) => {
       if (isSignedIn) {
         // let userWardrobe = await getWardrobe();
@@ -95,7 +96,7 @@ function App() {
             />
           );
         });
-        setWardrobe(cards);
+        setCards(cards);
       }
       resolve();
     });
@@ -105,7 +106,7 @@ function App() {
     const generateCardAsync = async () => {
       console.log("USEEFFECT - SIGNED IN");
       let userWardrobe = await getWardrobe();
-      await generateCard(userWardrobe);
+      await generateCard(userWardrobe, setWardrobe);
     };
 
     if (isSignedIn) {
@@ -118,7 +119,7 @@ function App() {
       const card = null; 
       console.log("USEEFFECT - RESPONSE PARAM");
       let JSONWardrobe = JSON.parse(GPTresponse);
-      await generateCard(JSONWardrobe);
+      await generateCard(JSONWardrobe, setRecommendation);
     };
     generateCardAsync();
   }, [GPTresponse]);
@@ -265,10 +266,27 @@ function App() {
         <Main
           currentUserEmail={currentUserEmail}
           setCurrentUserEmail={setCurrentUserEmail}
-          GPTresponse = {GPTresponse}
+          GPTresponse={GPTresponse}
           setResponse={setResponse}
         />
       </div>
+      {isSignedIn && GPTresponse && (
+        <div>
+          <h1 className="wardrobe-title">Your Outfit Selection</h1>
+          <div className="wardrobe-container">
+            {recommendation.length > 0 ? recommendation
+             : "Enter a prompt for a personalized recommendation"}
+          </div>
+        </div>
+      )}
+
+      {!isSignedIn && (
+        <div className="wardrobe-container">
+          <h1 className="wardrobe-title">
+            Log in to see your personalized recommendations
+          </h1>
+        </div>
+      )}
       {/* Conditional rendering, wardrobe only appears when signed in */}
       {isSignedIn ? (
         <div>
