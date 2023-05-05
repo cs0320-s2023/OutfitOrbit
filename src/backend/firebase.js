@@ -5,7 +5,8 @@ import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
 import { doc, setDoc, addDoc, query, where, updateDoc, arrayUnion, arrayRemove} from "firebase/firestore"; 
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "./private/firebase.tsx"
-import { Clothing } from "./Clothing";;
+import { Clothing } from "./Clothing";
+;
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -191,6 +192,52 @@ export async function addToWardrobe(item) {
   }
 }
 
+export async function updatePoints(item) {
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("email");
+
+  const wardrobeCollectionRef = collection(db, "wardrobeDB");
+  const wardrobeSnapshot = await getDocs(
+    query(wardrobeCollectionRef, where("email", "==", email))
+  );
+
+  if (wardrobeSnapshot.empty) {
+    console.error(`Wardrobe not found for user with email ${email}`);
+    return;
+  }
+
+  const wardrobeDoc = wardrobeSnapshot.docs[0];
+  const wardrobeData = wardrobeDoc.data();
+  const wardrobeId = wardrobeDoc.id;
+  const items = wardrobeData.items;
+
+  const matchingIndex = items.findIndex((i) => i.itemName === item.itemName);
+
+  if (matchingIndex === -1) {
+    console.error(
+      `Item with name ${item.itemName} not found in wardrobe for user with email ${email}`
+    );
+    return;
+  }
+
+  const matchingItem = items[matchingIndex];
+  const updatedPoints = matchingItem.points + 1;
+  const updatedItem = { ...matchingItem, points: updatedPoints };
+
+  const updatedItems = [
+    ...items.slice(0, matchingIndex),
+    updatedItem,
+    ...items.slice(matchingIndex + 1),
+  ];
+
+  await updateDoc(wardrobeCollectionRef.doc(wardrobeId), {
+    items: updatedItems,
+  });
+  console.log(
+    `Updated points for item ${item.itemName} in wardrobe for user with email ${email}`
+  );
+}
+
 
 /* Generalized function reads from database and calls a function on the results */
 export async function readFromDB(collectionName, field, value) {
@@ -209,6 +256,8 @@ export async function readFromDB(collectionName, field, value) {
     return readFromDB(collectionName, field, value);
   }
 }
+
+
 
   export function wardrobeToString(clothingArray) {
     const clothingObjects = clothingArray.map((item) => item.toJSON());

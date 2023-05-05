@@ -69,8 +69,7 @@ function NewRound({ addGuess }) {
       <div className="Like_Button">
         <button
           onClick={() => {
-            addGuess(value0);
-            setValue0("");
+            
           }}
           aria-label={TEXT_like_button_accessible_name}
         >

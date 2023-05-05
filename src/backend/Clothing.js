@@ -1,3 +1,5 @@
+
+
 export class Clothing {
   constructor(name, type, color, material, occasion, brand) {
     this.name = name;
@@ -6,6 +8,7 @@ export class Clothing {
     this.material = material; 
     this.occasion = occasion; 
     this.brand = brand;
+    this.points = 0; 
   }
 
   toJSON() {
@@ -15,7 +18,8 @@ export class Clothing {
       color: this.color,
       material: this.material,
       occasion: this.occasion,
-      brand: this.brand
+      brand: this.brand,
+      points: this.points
     };
   }
 
