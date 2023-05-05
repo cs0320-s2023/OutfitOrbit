@@ -112,13 +112,16 @@ body::-webkit-scrollbar {
   padding-left: 1rem;
   padding-right: 1rem;
   width: 100vw;
-  height: 80vh;
+  height: auto;
+  max-height: 80vh;
+  min-height: 20vh;
 }
 
 .wardrobe-title {
   color: var(--navy-blue);
   padding-left: 2rem;
   padding-top: 2rem;
+  text-align: left;
 }
 
 .form-control {

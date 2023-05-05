@@ -283,7 +283,7 @@ function App() {
       {!isSignedIn && (
         <div className="wardrobe-container">
           <h1 className="wardrobe-title">
-            Log in to see your personalized recommendations
+            Please log in to see personalised recommendations
           </h1>
         </div>
       )}
@@ -293,17 +293,17 @@ function App() {
           <h1 className="wardrobe-title">
             {isSignedIn
               ? "Your Wardrobe:"
-              : "Please sign in to see your wardrobe!"}
+              : "Please log in to see your wardrobe!"}
           </h1>
           <div className="wardrobe-container">
-            {wardrobe.length > 0 ? wardrobe : "Loading..."}
+            {wardrobe.length > 0 ? wardrobe : "Loading... Please refresh the page if screen persists"}
           </div>
         </div>
       ) : (
         <div className="wardrobe-container">
           <h1 className="wardrobe-title">
             {" "}
-            Please sign in to see your wardrobe!
+            Please log in to see your wardrobe!
           </h1>
         </div>
       )}
