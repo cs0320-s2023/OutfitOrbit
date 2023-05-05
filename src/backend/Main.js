@@ -1,7 +1,7 @@
-
 import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
-import Gpt3 from "./Gpt3.js"
-import './Main.css';
+import Gpt3 from "./Gpt3.js";
+import "./Main.css";
+import { jsonToClothingArray } from "./Clothing.js"
 
 export const TEXT_try_button_accessible_name = "try your sequence";
 export const TEXT_number_1_accessible_name = "first number in sequence";
@@ -11,7 +11,8 @@ export const TEXT_try_button_text = "Try it!";
 
 function ControlledInput({ value, setValue, ariaLabel }) {
   return (
-    <input className="search" 
+    <input
+      className="search"
       placeholder="Describe the outfit you would like to generate."
       value={value}
       onChange={(ev) => setValue(ev.target.value)}
@@ -20,10 +21,9 @@ function ControlledInput({ value, setValue, ariaLabel }) {
   );
 }
 
-function OldRound({guess}) {
-  const [data, setData] = useState ("");
-
-  console.log("result is" + data)
+function OldRound({ guess }) {
+  // const [data, setData] = useState("");
+  // console.log("result is" + data);
   return (
     <div className={"guess-round-"} aria-label={"scary story"}>
       <p>{guess}</p>
@@ -31,8 +31,8 @@ function OldRound({guess}) {
   );
 }
 
-function NewRound({addGuess}) {
-  const [value0, setValue0] = useState ("");
+function NewRound({ addGuess }) {
+  const [value0, setValue0] = useState("");
   return (
     <div className="searchBar">
       <div className="Bar">
@@ -54,8 +54,8 @@ function NewRound({addGuess}) {
       <div className="Button">
         <button
           onClick={() => {
-              addGuess(value0);
-              setValue0("");
+            addGuess(value0);
+            setValue0("");
           }}
           aria-label={TEXT_try_button_accessible_name}
         >
@@ -63,22 +63,23 @@ function NewRound({addGuess}) {
           {TEXT_try_button_text}
         </button>
       </div>
-      
     </div>
   );
 }
 
-export default function Main() {
+export default function Main(props) {
   const [guess, setGuesses] = useState("");
-  const [data, setData] = useState ("");
+  // const [data, setData] = useState("");
 
   return (
     <div className="App">
-      <OldRound guess={data} />
+      <OldRound guess={props.GPTresponse}/>
       <NewRound
         addGuess={(guess) => {
-          Gpt3(guess)?.then((r) => setData(r.data.choices[0].text))
-          setGuesses(guess);
+          Gpt3(props.currentUserEmail, guess)?.then((r) =>
+            props.setResponse(r.data.choices[0].text)
+          );
+          setGuesses(guess); 
         }}
       />
     </div>

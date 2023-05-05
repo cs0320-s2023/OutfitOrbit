@@ -173,3 +173,8 @@ export async function readFromDB(collectionName, field, value) {
     return readFromDB(collectionName, field, value);
   }
 }
+
+  export function wardrobeToString(clothingArray) {
+    const clothingObjects = clothingArray.map((item) => item.toJSON());
+    return JSON.stringify(clothingObjects);
+  }

@@ -1,0 +1,18 @@
+{
+	"name": "forge-server",
+	"description": "Implementation of the Forge language server in node.",
+	"author": "",
+	"license": "",
+	"engines": {
+		"node": "*"
+	},
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"dependencies": {
+		"vscode-languageserver": "^7.0.0",
+		"vscode-languageserver-textdocument": "^1.0.1"
+	},
+	"scripts": {}
+}
