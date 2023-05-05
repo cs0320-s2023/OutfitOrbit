@@ -75,9 +75,9 @@ export const signOutGoogle = () => {
 /* Class to represent our database */
 export class WardrobeDB {
   constructor(name, email, wardrobe = []) {
-    this.name = name;
-    this.email = email;
-    this.wardrobe = wardrobe;
+    this.name = name || '';
+    this.email = email || '';
+    this.wardrobe = wardrobe || [];
   }
   toString() {
     return this.name + ", " + this.email;
@@ -155,13 +155,18 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     console.log("User already exists in Firestore, updating wardrobe:", email);
     const docRef = querySnapshot.docs[0].ref;
     console.log("Wardrobe to update:", wardrobe);
-    const wardrobeData = wardrobeConverter.toFirestore({
-      name: name,
-      email: email,
-      wardrobe: wardrobe,
-    });
-    await updateDoc(docRef, wardrobeData);
-    console.log("Wardrobe updated in Firestore:", email, wardrobe);
+    if (wardrobe && wardrobe.length > 0) {
+      const wardrobeData = wardrobeConverter.toFirestore({
+        name: name,
+        email: email,
+        wardrobe: wardrobe,
+      });
+      console.log(wardrobeData === undefined);
+      await updateDoc(docRef, wardrobeData); //basically this is saying that wardrobeData is undefined but its not?
+      console.log("Wardrobe updated in Firestore:", email, wardrobe);
+    } else {
+      console.log("Wardrobe is empty or undefined, skipping update to Firestore");
+    }
   }
 }
 
@@ -169,18 +174,47 @@ export function addToWardrobe(item) {
   // Get the current wardrobe from localStorage 
   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || []; 
   
-  console.log('hi hello', currentWardrobe);
+  // Convert each item to a Clothing instance
+  const wardrobe = currentWardrobe.map((clothing) => {
+    return new Clothing(
+      clothing.name,
+      clothing.type,
+      clothing.color,
+      clothing.material,
+      clothing.occasion,
+      clothing.brand
+    );
+  });
+
   // Add the new item to the wardrobe 
-  currentWardrobe.push(item); 
+  wardrobe.push(item); 
   
   // Update the localStorage with the new wardrobe 
-  localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe)); 
+  localStorage.setItem("wardrobe", JSON.stringify(wardrobe)); 
   
   // Update the wardrobe in the database 
   const name = localStorage.getItem("name"); 
   const email = localStorage.getItem("email"); 
-  createWardrobeDB(name, email, currentWardrobe); 
+  createWardrobeDB(name, email, wardrobe); 
 }
+
+
+// export function addToWardrobe(item) { 
+//   // Get the current wardrobe from localStorage 
+//   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || []; 
+  
+//   console.log('hi hello', currentWardrobe);
+//   // Add the new item to the wardrobe 
+//   currentWardrobe.push(item); 
+  
+//   // Update the localStorage with the new wardrobe 
+//   localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe)); 
+  
+//   // Update the wardrobe in the database 
+//   const name = localStorage.getItem("name"); 
+//   const email = localStorage.getItem("email"); 
+//   createWardrobeDB(name, email, currentWardrobe); 
+// }
 
 // export async function addToWardrobe(item) {
 //   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];

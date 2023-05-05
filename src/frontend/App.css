@@ -126,4 +126,5 @@ body::-webkit-scrollbar {
 
 .form-control {
   padding: 10px;
+  color: var(--dusty-rose);
 }

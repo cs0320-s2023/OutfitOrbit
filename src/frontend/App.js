@@ -126,11 +126,11 @@ function App() {
   }, [GPTresponse]);
 
 
-    function handleSubmit(event) {
+  function handleSubmit(event) {
       event.preventDefault(); // prevent the form from submitting
     
       // get the values of each input box
-      const name = event.target.elements.name.value;
+      //const name = event.target.elements.name.value;
       const brand = event.target.elements.brand.value;
       const type = event.target.elements.type.value;
       const colour = event.target.elements.colour.value;
@@ -140,11 +140,10 @@ function App() {
       // create a new Clothing item with the fields provided
       const newItem = new Clothing(type, colour, material, occasion, brand);
       addToWardrobe(newItem);
-    }    
+  }    
 
     // create a new Clothing item with the fields provided
     // addToWardrobe(new Clothing(type, colour, material, occasion, brand));
-  }
 
   return (
     <div className="grid-container">
@@ -315,4 +314,6 @@ function App() {
       )}
     </div>
   );
+
+}
 export default App;
