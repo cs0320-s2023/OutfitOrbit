@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactDOM } from "react";
 import "./FlipCard.css";
+import { deleteFromWardrobe } from "../../backend/firebase";
 
 export default class Card extends React.Component {
   constructor(props) {
@@ -12,6 +13,7 @@ export default class Card extends React.Component {
 
   onClose = () => {
     this.setState({ showCard: false });
+    deleteFromWardrobe(this.props.id);
   };
 
   render() {

@@ -186,12 +186,31 @@ export async function addToWardrobe(item) {
     // If the wardrobe already exists in Firebase, update it with the new item
     const wardrobeDocRef = querySnapshot.docs[0].ref;
     await updateDoc(wardrobeDocRef, {wardrobe: arrayUnion(currentWardrobe)});
+    console.log(localStorage.getItem("wardrobe").length);
+    item.updateID(localStorage.getItem("wardrobe").length);
 
   } else {
     createWardrobeDB(name, email, currentWardrobe);
   }
 }
 
+export async function deleteFromWardrobe(itemId) {
+  const email = localStorage.getItem("email");
+
+  const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
+    wardrobeConverter
+  );
+
+  const querySnapshot = await getDocs(
+    query(wardrobeCollectionRef, where("email", "==", email))
+  );
+
+  if (!querySnapshot.empty) {
+    // If the wardrobe exists in Firebase, delete the item
+    const wardrobeDocRef = querySnapshot.docs[0].ref;
+    await updateDoc(wardrobeDocRef, { wardrobe: arrayRemove(itemId) });
+  }
+}
 
 /* Generalized function reads from database and calls a function on the results */
 export async function readFromDB(collectionName, field, value) {
