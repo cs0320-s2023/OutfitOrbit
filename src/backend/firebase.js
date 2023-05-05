@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
-import { doc, setDoc, addDoc, query, where} from "firebase/firestore"; 
+import { doc, setDoc, addDoc, query, where, updateDoc} from "firebase/firestore"; 
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "./private/firebase.tsx"
 import { Clothing } from "./Clothing";
 
@@ -48,8 +48,8 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
 
     localStorage.setItem("name", userName);
     localStorage.setItem("email", userEmail);
-    localStorage.setItem("wardrobe", [new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
-    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]);
+    localStorage.setItem("wardrobe", JSON.stringify([new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
+    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]));
 
   }).catch((error) => {
     console.log(error)
@@ -90,7 +90,28 @@ const wardrobeConverter = {
       name: wardrobeDB.name,
       email: wardrobeDB.email,
       wardrobe: wardrobeDB.wardrobe
-        ? wardrobeDB.wardrobe.map((clothing) => clothing.toJSON())
+        ? wardrobeDB.wardrobe.map((clothing) => {
+    
+            if (!(clothing instanceof Clothing)) {
+              console.log('Invalid wardrobe item', clothing.name);
+              // Manually create a new Clothing object with the correct properties
+              const convertedClothing = new Clothing(
+                  clothing.name,
+                  clothing.type,
+                  clothing.color,
+                  clothing.material,
+                  clothing.occasion,
+                  clothing.brand
+              );
+              clothing = convertedClothing; // overwrite the original object with the new object
+
+              // console.error('Invalid wardrobe item:', clothing.name);
+              // throw new Error('Invalid wardrobe item');
+
+              console.log(clothing instanceof Clothing)
+            }
+            return clothing.toJSON();
+          })
         : null,
     };
     // Remove any undefined values from the data object
@@ -121,35 +142,69 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
   const querySnapshot = await getDocs(
     query(wardrobeCollectionRef, where("email", "==", email))
   );
-
+  
   /* If user does not exist then add it to the database, otherwise do not */
   if (querySnapshot.empty && localStorage.getItem("wardrobe").length != 0) {
-    console.log(name, email, wardrobe)
+    //console.log(name, email, wardrobe)
     await addDoc(
       wardrobeCollectionRef,
       new WardrobeDB(name, email, wardrobe)
     );
     console.log("Data saved to Firestore:", name, email, wardrobe);
   } else {
-    console.log("User already exists in Firestore:", email);
+    console.log("User already exists in Firestore, updating wardrobe:", email);
+    const docRef = querySnapshot.docs[0].ref;
+    console.log("Wardrobe to update:", wardrobe);
+    const wardrobeData = wardrobeConverter.toFirestore({
+      name: name,
+      email: email,
+      wardrobe: wardrobe,
+    });
+    await updateDoc(docRef, wardrobeData);
+    console.log("Wardrobe updated in Firestore:", email, wardrobe);
   }
 }
 
-// export function addToWardrobe(item) {
-//   // Get the current wardrobe from localStorage
-//   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")); //this isn't a JSON, which is causing errors
+export function addToWardrobe(item) { 
+  // Get the current wardrobe from localStorage 
+  const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || []; 
+  
+  console.log('hi hello', currentWardrobe);
+  // Add the new item to the wardrobe 
+  currentWardrobe.push(item); 
+  
+  // Update the localStorage with the new wardrobe 
+  localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe)); 
+  
+  // Update the wardrobe in the database 
+  const name = localStorage.getItem("name"); 
+  const email = localStorage.getItem("email"); 
+  createWardrobeDB(name, email, currentWardrobe); 
+}
 
-//   // Add the new item to the wardrobe
-//   currentWardrobe.push(item);
+// export async function addToWardrobe(item) {
+//   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")) || [];
 
-//   // Update the localStorage with the new wardrobe
-//   localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe));
-
-//   // Update the wardrobe in the database
+//   // Update the wardrobe in Firebase
 //   const name = localStorage.getItem("name");
 //   const email = localStorage.getItem("email");
-//   createWardrobeDB(name, email, currentWardrobe);
+
+//   const wardrobeRef = db.collection("users").doc(email).collection("wardrobes").doc(name);
+//   const wardrobeDoc = await wardrobeRef.get();
+
+//   if (wardrobeDoc.exists) {
+//     // If the wardrobe already exists in Firebase, update it with the new item
+//     const updatedWardrobe = [...currentWardrobe, item];
+//     await wardrobeRef.update({ items: updatedWardrobe });
+//   } else {
+//     // If the wardrobe does not exist in Firebase, create a new wardrobe document with the current item
+//     await wardrobeRef.set({ name: name, items: [item] });
+//   }
+
+//   // Update the local storage with the new wardrobe
+//   localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe.concat(item)));
 // }
+
 
 /* Generalized function reads from database and calls a function on the results */
 //? Can add a callback function as an argument to be exectued passing in the results into the callback

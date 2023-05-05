@@ -15,7 +15,7 @@ export class Clothing {
       color: this.color,
       material: this.material,
       occasion: this.occasion,
-      brand: this.brand,
+      brand: this.brand
     };
   }
 

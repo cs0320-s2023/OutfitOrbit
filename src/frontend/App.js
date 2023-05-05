@@ -111,7 +111,8 @@ function App() {
       const occasion = event.target.elements.occasion.value;
     
       // create a new Clothing item with the fields provided
-      // addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+      const newItem = new Clothing(type, colour, material, occasion, brand);
+      addToWardrobe(newItem);
     }    
 
     return (
@@ -177,6 +178,15 @@ function App() {
             <div className="row">
               <div className="column">
                 <form onSubmit={handleSubmit}>
+                <div className="form-control">
+                    <label>Name</label> <br />
+                    <input
+                      type="text"
+                      name="name"
+                      // value={state.email}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
                   <div className="form-control">
                     <label>Brand</label> <br />
                     <input
