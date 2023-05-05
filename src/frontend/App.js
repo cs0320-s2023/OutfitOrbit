@@ -17,6 +17,7 @@ function App() {
   const [addVisibility, setAddVisibility] = useState(false);
   const [currentUserEmail, setCurrentUserEmail] = useState("");
 
+
   // Authentication states
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [wardrobe, setWardrobe] = useState([]);
@@ -82,8 +83,6 @@ function App() {
       if (isSignedIn) {
         // let userWardrobe = await getWardrobe();
         let cards = userWardrobe.map((clothing) => {
-          console.log(clothing.ocasion);
-          console.log(clothing.brand);
           return (
             <Card
               key={clothing.id}
@@ -91,8 +90,8 @@ function App() {
               type={clothing.type}
               color={clothing.color}
               material={clothing.material}
-              occasion={clothing.occasion}
               brand={clothing.brand}
+              occasion={clothing.occasion}
             />
           );
         });
@@ -104,20 +103,17 @@ function App() {
 
   useEffect(() => {
     const generateCardAsync = async () => {
-      console.log("USEEFFECT - SIGNED IN");
       let userWardrobe = await getWardrobe();
       await generateCard(userWardrobe, setWardrobe);
     };
 
-    if (isSignedIn) {
+    if (isSignedIn || wardrobe !== null) {
       generateCardAsync();
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, wardrobe]);
 
   useEffect(() => {
     const generateCardAsync = async () => {
-      const card = null; 
-      console.log("USEEFFECT - RESPONSE PARAM");
       let JSONWardrobe = JSON.parse(GPTresponse);
       await generateCard(JSONWardrobe, setRecommendation);
     };
@@ -126,18 +122,20 @@ function App() {
 
 
   function handleSubmit(event) {
-    event.preventDefault(); // prevent the form from submitting
-
-    // get the values of each input box
-    const name = event.target.elements.name.value;
-    const brand = event.target.elements.brand.value;
-    const type = event.target.elements.type.value;
-    const colour = event.target.elements.colour.value;
-    const material = event.target.elements.material.value;
-    const occasion = event.target.elements.occasion.value;
-
-    // create a new Clothing item with the fields provided
-    // addToWardrobe(new Clothing(type, colour, material, occasion, brand));
+      event.preventDefault(); // prevent the form from submitting
+    
+      // get the values of each input box
+      //const name = event.target.elements.name.value;
+      const type = event.target.elements.type.value;
+      const colour = event.target.elements.colour.value;
+      const material = event.target.elements.material.value;
+      const occasion = event.target.elements.occasion.value;
+      const brand = event.target.elements.brand.value;
+      const name = event.target.elements.name.value;
+    
+      // create a new Clothing item with the fields provided
+      const newItem = new Clothing(name, type, colour, material, occasion, brand);
+      addToWardrobe(newItem);
   }
 
   return (
@@ -203,6 +201,13 @@ function App() {
           <div className="row">
             <div className="column">
               <form onSubmit={handleSubmit}>
+                <div className="form-control">
+                  <label>Name</label> <br />
+                  <input
+                    type="text"
+                    name="name"
+                    />
+                  </div>
                 <div className="form-control">
                   <label>Brand</label> <br />
                   <input
@@ -283,7 +288,7 @@ function App() {
       {!isSignedIn && (
         <div className="wardrobe-container">
           <h1 className="wardrobe-title">
-            Log in to see your personalized recommendations
+            Please log in to see personalised recommendations
           </h1>
         </div>
       )}
@@ -293,21 +298,22 @@ function App() {
           <h1 className="wardrobe-title">
             {isSignedIn
               ? "Your Wardrobe:"
-              : "Please sign in to see your wardrobe!"}
+              : "Please log in to see your wardrobe!"}
           </h1>
           <div className="wardrobe-container">
-            {wardrobe.length > 0 ? wardrobe : "Loading..."}
+            {wardrobe.length > 0 ? wardrobe : "Loading... Please refresh the page if screen persists"}
           </div>
         </div>
       ) : (
         <div className="wardrobe-container">
           <h1 className="wardrobe-title">
             {" "}
-            Please sign in to see your wardrobe!
+            Please log in to see your wardrobe!
           </h1>
         </div>
       )}
     </div>
   );
+
 }
 export default App;

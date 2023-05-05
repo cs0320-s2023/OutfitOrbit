@@ -3,9 +3,9 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
-import { doc, setDoc, addDoc, query, where} from "firebase/firestore"; 
+import { doc, setDoc, addDoc, query, where, updateDoc, arrayUnion, arrayRemove} from "firebase/firestore"; 
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "./private/firebase.tsx"
-import { Clothing } from "./Clothing";
+import { Clothing } from "./Clothing";;
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -48,8 +48,8 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
 
     localStorage.setItem("name", userName);
     localStorage.setItem("email", userEmail);
-    localStorage.setItem("wardrobe", [new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
-    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]);
+    localStorage.setItem("wardrobe", JSON.stringify([new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
+    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]));
 
   }).catch((error) => {
     console.log(error)
@@ -75,9 +75,9 @@ export const signOutGoogle = () => {
 /* Class to represent our database */
 export class WardrobeDB {
   constructor(name, email, wardrobe = []) {
-    this.name = name;
-    this.email = email;
-    this.wardrobe = wardrobe;
+    this.name = name || '';
+    this.email = email || '';
+    this.wardrobe = wardrobe || [];
   }
   toString() {
     return this.name + ", " + this.email;
@@ -90,7 +90,22 @@ const wardrobeConverter = {
       name: wardrobeDB.name,
       email: wardrobeDB.email,
       wardrobe: wardrobeDB.wardrobe
-        ? wardrobeDB.wardrobe.map((clothing) => clothing.toJSON())
+        ? wardrobeDB.wardrobe.map((clothing) => {
+    
+            if (!(clothing instanceof Clothing)) {
+              // Manually create a new Clothing object with the correct properties
+              const convertedClothing = new Clothing(
+                  clothing.name,
+                  clothing.type,
+                  clothing.color,
+                  clothing.material,
+                  clothing.occasion,
+                  clothing.brand
+              );
+              clothing = convertedClothing; // overwrite the original object with the new object
+            }
+            return clothing.toJSON();
+          })
         : null,
     };
     // Remove any undefined values from the data object
@@ -114,6 +129,50 @@ const wardrobeConverter = {
 
 /* Create a wardrobe database storage in firebase */
 export async function createWardrobeDB(name, email, wardrobe = []) {
+
+  const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
+    wardrobeConverter
+  );
+
+  const querySnapshot = await getDocs(
+    query(wardrobeCollectionRef, where("email", "==", email))
+  );
+  
+  /* If user does not exist then add it to the database, otherwise do not */
+  if (querySnapshot.empty && localStorage.getItem("wardrobe").length != 0) {
+    console.log("empty wardrobe here wallahi")
+    await addDoc(
+      wardrobeCollectionRef,
+      new WardrobeDB(name, email, wardrobe)
+    );
+    console.log("Data saved to Firestore:", name, email, wardrobe);
+  } else {
+    const docRef = querySnapshot.docs[0].ref;
+    if (wardrobe && wardrobe.length > 0) {
+      const wardrobeData = wardrobeConverter.toFirestore({
+        name: name,
+        email: email,
+        wardrobe: wardrobe,
+      });
+      console.log("Wardrobe updated in Firestore:", email, wardrobe);
+    } else {
+      console.log("Wardrobe is empty or undefined, skipping update to Firestore");
+    }
+  }
+}
+
+export async function addToWardrobe(item) {
+  console.log("WARDROBE ITEM: ");
+  console.log(item);
+  const currentWardrobe = item.toJSON();
+
+  console.log("TRASNFORMED")
+  console.log(currentWardrobe)
+  
+  // Update the wardrobe in the localStorage
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("email");
+
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
   );
@@ -122,37 +181,19 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     query(wardrobeCollectionRef, where("email", "==", email))
   );
 
-  /* If user does not exist then add it to the database, otherwise do not */
-  if (querySnapshot.empty && localStorage.getItem("wardrobe").length != 0) {
-    console.log(name, email, wardrobe)
-    await addDoc(
-      wardrobeCollectionRef,
-      new WardrobeDB(name, email, wardrobe)
-    );
-    console.log("Data saved to Firestore:", name, email, wardrobe);
+  if (!querySnapshot.empty) {
+    console.log(querySnapshot)
+    // If the wardrobe already exists in Firebase, update it with the new item
+    const wardrobeDocRef = querySnapshot.docs[0].ref;
+    await updateDoc(wardrobeDocRef, {wardrobe: arrayUnion(currentWardrobe)});
+
   } else {
-    console.log("User already exists in Firestore:", email);
+    createWardrobeDB(name, email, currentWardrobe);
   }
 }
 
-// export function addToWardrobe(item) {
-//   // Get the current wardrobe from localStorage
-//   const currentWardrobe = JSON.parse(localStorage.getItem("wardrobe")); //this isn't a JSON, which is causing errors
-
-//   // Add the new item to the wardrobe
-//   currentWardrobe.push(item);
-
-//   // Update the localStorage with the new wardrobe
-//   localStorage.setItem("wardrobe", JSON.stringify(currentWardrobe));
-
-//   // Update the wardrobe in the database
-//   const name = localStorage.getItem("name");
-//   const email = localStorage.getItem("email");
-//   createWardrobeDB(name, email, currentWardrobe);
-// }
 
 /* Generalized function reads from database and calls a function on the results */
-//? Can add a callback function as an argument to be exectued passing in the results into the callback
 export async function readFromDB(collectionName, field, value) {
   const collectionRef = collection(db, collectionName);
 
@@ -160,10 +201,7 @@ export async function readFromDB(collectionName, field, value) {
     query(collectionRef, where(field, "==", value))
   );
 
-  console.log(querySnapshot);
-
   if (!querySnapshot.empty) {
-    console.log("NOT EMPTY")
     const results = querySnapshot.docs.map(doc => doc.data());
     return results[0].wardrobe; // only one user with email so always 0 value
   } else {

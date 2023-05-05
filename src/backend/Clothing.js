@@ -15,7 +15,7 @@ export class Clothing {
       color: this.color,
       material: this.material,
       occasion: this.occasion,
-      brand: this.brand,
+      brand: this.brand
     };
   }
 
@@ -24,16 +24,5 @@ export class Clothing {
     const { name, type, color, material, occasion, brand } = jsonObj;
     return new Clothing(name, type, color, material, occasion, brand);
   });
-}
-
-//   parseClothingItem(clothingObj) {
-//   const type = clothingObj.type;
-//   const color = clothingObj.color;
-//   const material = clothingObj.material;
-//   const occassion = clothingObj.occasion;
-//   const brand = clothingObj.brand;
-
-//   return new Clothing(type, color, material, occassion, brand);
-// }
-
+  }
 }

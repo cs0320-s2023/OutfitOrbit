@@ -27,6 +27,7 @@
     margin: auto;
     display: block;
     perspective: 1000px;
+    margin-bottom: 3rem;
   }
   
   body #root .card-container {
