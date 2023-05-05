@@ -9,6 +9,7 @@ export class Clothing {
     this.occasion = occasion; 
     this.brand = brand;
     this.points = 0; 
+    this.id = 0;
   }
 
   toJSON() {
@@ -19,7 +20,7 @@ export class Clothing {
       material: this.material,
       occasion: this.occasion,
       brand: this.brand,
-      points: this.points
+      id: this.id
     };
   }
 
@@ -28,5 +29,9 @@ export class Clothing {
     const { name, type, color, material, occasion, brand } = jsonObj;
     return new Clothing(name, type, color, material, occasion, brand);
   });
+  }
+
+  updateID(newId) {
+    this.id = newId;
   }
 }

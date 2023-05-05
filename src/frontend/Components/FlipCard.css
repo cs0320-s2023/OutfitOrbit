@@ -31,7 +31,7 @@
   }
   
   body #root .card-container {
-    height: 150px;
+    height: 205px;
     margin: 0;
     padding: 0;
     top: 20px;
@@ -111,6 +111,13 @@
     font-size: 14px;
   }
 
-
-  
+  .close-button {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
     
