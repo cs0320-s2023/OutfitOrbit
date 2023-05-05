@@ -107,14 +107,13 @@ function App() {
       await generateCard(userWardrobe, setWardrobe);
     };
 
-    if (isSignedIn) {
+    if (isSignedIn || wardrobe !== null) {
       generateCardAsync();
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, wardrobe]);
 
   useEffect(() => {
     const generateCardAsync = async () => {
-      const card = null; 
       let JSONWardrobe = JSON.parse(GPTresponse);
       await generateCard(JSONWardrobe, setRecommendation);
     };
