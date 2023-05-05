@@ -107,6 +107,7 @@ body::-webkit-scrollbar {
 .wardrobe-container {
   z-index: 2;
   display: inline-flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding-left: 1rem;

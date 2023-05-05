@@ -146,17 +146,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     );
     console.log("Data saved to Firestore:", name, email, wardrobe);
   } else {
-    const docRef = querySnapshot.docs[0].ref;
-    if (wardrobe && wardrobe.length > 0) {
-      const wardrobeData = wardrobeConverter.toFirestore({
-        name: name,
-        email: email,
-        wardrobe: wardrobe,
-      });
-      console.log("Wardrobe updated in Firestore:", email, wardrobe);
-    } else {
-      console.log("Wardrobe is empty or undefined, skipping update to Firestore");
-    }
+    console.log("User already exists:", email);
   }
 }
 
