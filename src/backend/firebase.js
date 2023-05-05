@@ -152,7 +152,6 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
 // }
 
 /* Generalized function reads from database and calls a function on the results */
-//? Can add a callback function as an argument to be exectued passing in the results into the callback
 export async function readFromDB(collectionName, field, value) {
   const collectionRef = collection(db, collectionName);
 

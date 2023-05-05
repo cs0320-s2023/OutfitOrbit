@@ -82,7 +82,8 @@ function App() {
       if (isSignedIn) {
         // let userWardrobe = await getWardrobe();
         let cards = userWardrobe.map((clothing) => {
-          console.log(clothing.ocasion);
+          console.log("ISSUE HERE")
+          console.log(clothing.occasion);
           console.log(clothing.brand);
           return (
             <Card
@@ -91,8 +92,8 @@ function App() {
               type={clothing.type}
               color={clothing.color}
               material={clothing.material}
-              occasion={clothing.occasion}
               brand={clothing.brand}
+              occasion={clothing.occasion}
             />
           );
         });

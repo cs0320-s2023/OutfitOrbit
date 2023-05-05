@@ -11,7 +11,8 @@ export default class Card extends React.Component {
           color={this.props.color}
           material={this.props.material}
           type={this.props.type} // shirt, trousers etc...
-          note={this.props.note}
+          occasion={this.props.occasion}
+          brand={this.props.brand}
           />
         </div>
       )
@@ -34,9 +35,12 @@ export default class Card extends React.Component {
         <div onMouseEnter={this.flip} onMouseLeave={this.flip} className={"card-container" + (this.state.flipped ? " flipped" : "")}>
           <Front name={this.props.name}/>
           <Back 
+          name={this.props.name}
           color={this.props.color}
           material={this.props.material}
-          type={this.props.type}/>
+          type={this.props.type} // shirt, trousers etc...
+          occasion={this.props.occasion}
+          brand={this.props.brand}/>
         </div>
   
       )
