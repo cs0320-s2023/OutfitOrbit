@@ -19,14 +19,21 @@ export class Clothing {
     };
   }
 
-  parseClothingItem(clothingObj) {
-  const type = clothingObj.type;
-  const color = clothingObj.color;
-  const material = clothingObj.material;
-  const occassion = clothingObj.occasion;
-  const brand = clothingObj.brand;
-
-  return new Clothing(type, color, material, occassion, brand);
+  jsonToClothingArray(jsonArray) {
+  return jsonArray.map(jsonObj => {
+    const { name, type, color, material, occasion, brand } = jsonObj;
+    return new Clothing(name, type, color, material, occasion, brand);
+  });
 }
+
+//   parseClothingItem(clothingObj) {
+//   const type = clothingObj.type;
+//   const color = clothingObj.color;
+//   const material = clothingObj.material;
+//   const occassion = clothingObj.occasion;
+//   const brand = clothingObj.brand;
+
+//   return new Clothing(type, color, material, occassion, brand);
+// }
 
 }

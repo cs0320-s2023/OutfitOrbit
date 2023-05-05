@@ -207,7 +207,6 @@ export function addToWardrobe(item) {
 
 
 /* Generalized function reads from database and calls a function on the results */
-//? Can add a callback function as an argument to be exectued passing in the results into the callback
 export async function readFromDB(collectionName, field, value) {
   const collectionRef = collection(db, collectionName);
 
@@ -220,6 +219,7 @@ export async function readFromDB(collectionName, field, value) {
   if (!querySnapshot.empty) {
     console.log("NOT EMPTY")
     const results = querySnapshot.docs.map(doc => doc.data());
+    console.log(typeof(results[0].wardrobe))
     return results[0].wardrobe; // only one user with email so always 0 value
   } else {
     console.log(`No data found in Firestore (${collectionName}) for ${field} = ${value}`);
@@ -227,3 +227,8 @@ export async function readFromDB(collectionName, field, value) {
     return readFromDB(collectionName, field, value);
   }
 }
+
+  export function wardrobeToString(clothingArray) {
+    const clothingObjects = clothingArray.map((item) => item.toJSON());
+    return JSON.stringify(clothingObjects);
+  }
