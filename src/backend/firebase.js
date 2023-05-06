@@ -152,7 +152,12 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
 }
 
 export async function addToWardrobe(item) {
-  const currentWardrobe = item.toJSON();
+  console.log("ITEM TO ADD")
+  console.log(item)
+  const itemToAdd = item.toJSON();
+
+  console.log("ITEM TO ADD TO JSON");
+  console.log(itemToAdd);
   
   // Update the wardrobe in the localStorage
   const name = localStorage.getItem("name");
@@ -167,15 +172,22 @@ export async function addToWardrobe(item) {
   );
 
   if (!querySnapshot.empty) {
-    console.log(querySnapshot)
     // If the wardrobe already exists in Firebase, update it with the new item
     const wardrobeDocRef = querySnapshot.docs[0].ref;
-    await updateDoc(wardrobeDocRef, {wardrobe: arrayUnion(currentWardrobe)});
-    console.log(localStorage.getItem("wardrobe").length);
-    item.updateID(localStorage.getItem("wardrobe").length);
+    await updateDoc(wardrobeDocRef, {wardrobe: arrayUnion(itemToAdd)});
 
-  } else {
-    createWardrobeDB(name, email, currentWardrobe);
+    // Now update the localStorage
+    // localStorage.setItem("wardrobe", wardrobe.)
+    let localWardrobeCopy = localStorage.getItem('wardrobe');
+    let updatedLocalWardrobe = JSON.parse(localWardrobeCopy);
+    // Push the item to the array
+    updatedLocalWardrobe.push(itemToAdd);
+    // Stringify the updated array
+    let updatedLocalWardrobeStr = JSON.stringify(updatedLocalWardrobe);
+    // update the local wardrobe
+    localStorage.setItem('wardrobe', updatedLocalWardrobeStr);
+  } else { // realistically it should never reach this point
+    createWardrobeDB(name, email, itemToAdd);
   }
 }
 
@@ -225,7 +237,9 @@ export async function updatePoints(item) {
   );
 }
 
-export async function deleteFromWardrobe(itemId) {
+export async function deleteFromWardrobe(item) {
+  console.log("ITEM TO REMOVE")
+  console.log(item)
   const email = localStorage.getItem("email");
 
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
@@ -239,7 +253,7 @@ export async function deleteFromWardrobe(itemId) {
   if (!querySnapshot.empty) {
     // If the wardrobe exists in Firebase, delete the item
     const wardrobeDocRef = querySnapshot.docs[0].ref;
-    await updateDoc(wardrobeDocRef, { wardrobe: arrayRemove(itemId) });
+    await updateDoc(wardrobeDocRef, { wardrobe: arrayRemove(item) });
   }
 }
 
