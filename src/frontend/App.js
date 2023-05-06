@@ -120,6 +120,19 @@ function App() {
     generateCardAsync();
   }, [GPTresponse]);
 
+  function compareByName() {
+    const matches = [];
+    recommendation.forEach((recommendedItem) => {
+      const match = wardrobe.find((wardrobeItem) => {
+        return recommendedItem.name === wardrobeItem.name;
+      });
+
+      if (match) {
+        matches.push(match);
+      }
+    });
+    return matches;
+  }
 
   function handleSubmit(event) {
       event.preventDefault(); // prevent the form from submitting
@@ -273,6 +286,7 @@ function App() {
           setCurrentUserEmail={setCurrentUserEmail}
           GPTresponse={GPTresponse}
           setResponse={setResponse}
+          compareByName={compareByName}
         />
       </div>
       {isSignedIn && GPTresponse && (

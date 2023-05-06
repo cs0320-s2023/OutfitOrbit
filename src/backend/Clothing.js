@@ -1,3 +1,5 @@
+
+
 export class Clothing {
   constructor(name, type, color, material, occasion, brand) {
     this.name = name;
@@ -6,6 +8,8 @@ export class Clothing {
     this.material = material; 
     this.occasion = occasion; 
     this.brand = brand;
+    this.points = 0; 
+    this.id = 0;
   }
 
   toJSON() {
@@ -15,7 +19,8 @@ export class Clothing {
       color: this.color,
       material: this.material,
       occasion: this.occasion,
-      brand: this.brand
+      brand: this.brand,
+      id: this.id
     };
   }
 
@@ -24,5 +29,9 @@ export class Clothing {
     const { name, type, color, material, occasion, brand } = jsonObj;
     return new Clothing(name, type, color, material, occasion, brand);
   });
+  }
+
+  updateID(newId) {
+    this.id = newId;
   }
 }
