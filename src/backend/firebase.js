@@ -129,6 +129,7 @@ const wardrobeConverter = {
 
 /* Create a wardrobe database storage in firebase */
 export async function createWardrobeDB(name, email, wardrobe = []) {
+
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
     wardrobeConverter
   );
@@ -151,12 +152,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
 }
 
 export async function addToWardrobe(item) {
-  console.log("WARDROBE ITEM: ");
-  console.log(item);
   const currentWardrobe = item.toJSON();
-
-  console.log("TRASNFORMED")
-  console.log(currentWardrobe)
   
   // Update the wardrobe in the localStorage
   const name = localStorage.getItem("name");

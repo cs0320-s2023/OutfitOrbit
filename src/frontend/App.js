@@ -17,6 +17,7 @@ function App() {
   const [addVisibility, setAddVisibility] = useState(false);
   const [currentUserEmail, setCurrentUserEmail] = useState("");
 
+
   // Authentication states
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [wardrobe, setWardrobe] = useState([]);
@@ -106,14 +107,13 @@ function App() {
       await generateCard(userWardrobe, setWardrobe);
     };
 
-    if (isSignedIn) {
+    if (isSignedIn || wardrobe !== null) {
       generateCardAsync();
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, wardrobe]);
 
   useEffect(() => {
     const generateCardAsync = async () => {
-      const card = null; 
       let JSONWardrobe = JSON.parse(GPTresponse);
       await generateCard(JSONWardrobe, setRecommendation);
     };
