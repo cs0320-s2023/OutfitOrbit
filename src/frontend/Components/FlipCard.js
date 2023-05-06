@@ -14,7 +14,7 @@ export default class Card extends React.Component {
   onClose = () => {
     console.log("closed card!")
     this.setState({ showCard: false });
-    deleteFromWardrobe(this.props.id);
+    deleteFromWardrobe(this.props);
   };
 
   render() {

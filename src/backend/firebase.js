@@ -237,9 +237,36 @@ export async function updatePoints(item) {
   );
 }
 
-export async function deleteFromWardrobe(item) {
+export async function deleteFromWardrobe(itemToRemove) {
   console.log("ITEM TO REMOVE")
-  console.log(item)
+  console.log(itemToRemove)
+
+  // first remove the item from the localStorage
+  let localWardrobeCopy = localStorage.getItem('wardrobe');
+  let updatedLocalWardrobe = JSON.parse(localWardrobeCopy);
+
+  // Find the index of the item to remove
+  let itemIndex = updatedLocalWardrobe.findIndex(item => {
+    // Compare properties to determine if the items are the same
+    return (
+      item.name === itemToRemove.name &&
+      item.type === itemToRemove.type &&
+      item.color === itemToRemove.color &&
+      item.material === itemToRemove.material &&
+      item.brand === itemToRemove.brand &&
+      item.occasion === itemToRemove.occasion
+    );
+  });
+
+  // If the item is found, remove it from the array
+  if (itemIndex !== -1) {
+    updatedLocalWardrobe.splice(itemIndex, 1);
+  }
+
+  // Stringify the updated array and save it back to localStorage
+  let updatedLocalWardrobeStr = JSON.stringify(updatedLocalWardrobe);
+  localStorage.setItem('wardrobe', updatedLocalWardrobeStr);
+
   const email = localStorage.getItem("email");
 
   const wardrobeCollectionRef = collection(db, "wardrobeDB").withConverter(
@@ -253,7 +280,7 @@ export async function deleteFromWardrobe(item) {
   if (!querySnapshot.empty) {
     // If the wardrobe exists in Firebase, delete the item
     const wardrobeDocRef = querySnapshot.docs[0].ref;
-    await updateDoc(wardrobeDocRef, { wardrobe: arrayRemove(item) });
+    await updateDoc(wardrobeDocRef, { wardrobe:  JSON.parse(updatedLocalWardrobeStr)});
   }
 }
 
