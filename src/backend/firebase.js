@@ -43,14 +43,16 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
     const userName = user.displayName;
     const userEmail = user.email;
 
-    createWardrobeDB(userName, userEmail, 
-      [new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
-    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]);
+    if (!localStorage.getItem('wardrobe')) {
+      createWardrobeDB(userName, userEmail, 
+        [new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
+      new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]);
 
-    localStorage.setItem("name", userName);
-    localStorage.setItem("email", userEmail);
-    localStorage.setItem("wardrobe", JSON.stringify([new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
-    new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]));
+      localStorage.setItem("name", userName);
+      localStorage.setItem("email", userEmail);
+      localStorage.setItem("wardrobe", JSON.stringify([new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
+      new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]))
+    };
 
   }).catch((error) => {
     console.log(error)
@@ -186,8 +188,6 @@ export async function addToWardrobe(item) {
     let updatedLocalWardrobeStr = JSON.stringify(updatedLocalWardrobe);
     // update the local wardrobe
     localStorage.setItem('wardrobe', updatedLocalWardrobeStr);
-  } else { // realistically it should never reach this point
-    createWardrobeDB(name, email, itemToAdd);
   }
 }
 
