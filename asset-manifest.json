@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/OutfitOrbit/static/css/main.9bd1314e.css",
-    "main.js": "/OutfitOrbit/static/js/main.a9a50f20.js",
+    "main.js": "/OutfitOrbit/static/js/main.fcbcc8c8.js",
     "static/media/Artboard 1.png": "/OutfitOrbit/static/media/Artboard 1.12eda94fd33edf4be1c8.png",
     "index.html": "/OutfitOrbit/index.html",
     "main.9bd1314e.css.map": "/OutfitOrbit/static/css/main.9bd1314e.css.map",
-    "main.a9a50f20.js.map": "/OutfitOrbit/static/js/main.a9a50f20.js.map"
+    "main.fcbcc8c8.js.map": "/OutfitOrbit/static/js/main.fcbcc8c8.js.map"
   },
   "entrypoints": [
     "static/css/main.9bd1314e.css",
-    "static/js/main.a9a50f20.js"
+    "static/js/main.fcbcc8c8.js"
   ]
 }
