@@ -33,6 +33,8 @@
     display: block;
     perspective: 1000px;
     margin-bottom: 3rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
   }
   
   body #root .card-container {
