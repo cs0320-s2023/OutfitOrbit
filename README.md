@@ -1,5 +1,10 @@
 # Outfit Orbit - Term Project
-## Project Details 
+
+Find our repository [here](https://github.com/cs0320-s2023/OutfitOrbit)
+
+We have also made this website publicly available [here]()
+## Project Details
+
 ### Project Description
 Our project is Outfit Orbit, an attempt at allowing users to repurpose and restyle items they have in their wardrobe by offering both a virtual wardrobe representation, but also providing peronalized outfit recommendations based on their pieces. Users are able to sign in to have access to their wardrobe, and are easily able to add and remove pieces which are classified by various fields. Then, users are able to input a prompt for the description of their outfit, and a ChatGPT API call is made which returns an outfit created from the pieces in the wardrobe which matches the inputted description. This outfit is then displayed, and the user has the opportunity to "like" the outfit, which allocates each of the clothing items a point. These points are taken into account when generating outfits, prioritizing pieces with a lower point value to encourage users to use their closet in its entirety and venture out from their most worn pieces. 
 We attempted to achieve this goal in order to promote sustainability in fashion from a new perspective: rather than focusing on manufacturing, we wanted to encourage and show our users that good style does not have to involve purchasing new clothes. 
@@ -9,12 +14,12 @@ Taleena (tchandar): worked on adding Wardrobe + Clothing objects to Firestore Da
 
 Keya (kkilacha): worked on adding new items to the Wardrobe using form, and removing from the firestore. Worked on setting up frontend wardrobe with flipcards.
 
-Javier (jferna35): worked heavily with the frontend and styling elements, set up Google Authentication. Some work on firebase adding 
-and removing items. Set up fetching from chatGPT.
+Javier (jferna35): worked heavily with the frontend and styling elements, set up Google Authentication. Some work on firebase adding
+and removing items from firestore db. Set up fetching from chatGPT.
 
-Anastasio (aortiz18)
+Keya (kkilacha): worked on adding new items to the Wardrobe using form, and removing from the firestore db, focus on accessibility through adding aria-labels
 
-**Repository link**: https://github.com/cs0320-s2023/OutfitOrbit.git
+Anastasio (aortiz18): completed the testing suite using mocking, added accessibility elements and elements of defensive programming, as well as organizing our code in packages.
 
 ## Design Choices
 
@@ -24,19 +29,36 @@ Anastasio (aortiz18)
 
 ## Errors / Bugs
 
-There are occassionally a few bugs with the Sign in/Sign out given that we do not use caching like most Google Authenticated sites do. Thus, in certain scenarios, if steps are completed too quickly the wrong wardrobe can display etc. Therefore, in some cases we opted to refresh the page rather than signing in and out.
+There are occassionally a few bugs with the Sign in/Sign out as there are many parts of the program which rely on databases updating. It is recommended to be patient when doing multiple actions at once, going too fast can result in elements not loading from the database. For example, in certain scenarios, if steps are completed too quickly the wrong wardrobe can display etc. Therefore, in some cases we opted to refresh the page rather than signing in and out.
 
 ## Tests
 
+For the firebase functions, unit testing was primarily undertaken, whereas we used integration testing for the App class.
 
-## How to:
+Firebase:
 
-**Run the tests**: 
+- creating database
+- adding a user
+- ensuring same user is not added twice
+- signing in and out
 
-**Build and Run Program**: 
-- Run npm start from the terminal 
-- Sign in on our page using Google Authentication 
-- Add clothes to your wardrobe using the Add to Closet Popup form 
-- When you want to generate an outfit, input a prompt into the Search Bar and hit search 
-- If you want to remove clothes from your closet, hit the x in the top right corner 
-- If you like one of the suggested outfits: hit the like button 
+App.js:
+
+- Integration testing for frontend
+- Mocking for testing wardrobe elements adding/removing/displaying
+- Mocking to test chatGPT responses
+
+## How to
+
+**Run the tests**:
+
+- run npm test in the terminal to run the testing suites
+
+**Build and Run Program**:
+
+- Run npm install followed by npm start from the terminal (root directory)
+- Sign in on our page using Google Authentication
+- Add clothes to your wardrobe using the Add to Closet Popup form
+- When you want to generate an outfit, input a prompt into the Search Bar and hit search
+- If you want to remove clothes from your closet, hit the x in the top right corner
+- If you like one of the suggested outfits: hit the like button
