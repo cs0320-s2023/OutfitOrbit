@@ -63,6 +63,7 @@ class BlogCard extends React.Component {
           occasion={this.props.occasion}
           brand={this.props.brand}
           onClose={this.props.onClose}
+          className="card-back"
         />
       </div>
     );
@@ -73,7 +74,9 @@ class Front extends React.Component {
   render() {
     return (
       <div className="front">
-        <MainArea name={this.props.name} />
+        <div class="inner-container">
+          <MainArea name={this.props.name} />
+        </div>
       </div>
     );
   }
@@ -83,14 +86,16 @@ class Back extends React.Component {
   render() {
     return (
       <div className="back">
-        <button onClick={this.props.onClose} className="close-button">
-          X
-        </button>
-        <p>Type: {this.props.type}</p>
-        <p>Material: {this.props.material}</p>
-        <p>Color: {this.props.color}</p>
-        <p>Occasion: {this.props.occasion}</p>
-        <p>Brand: {this.props.brand}</p>
+        <div class="inner-container">
+          <button onClick={this.props.onClose} className="close-button">
+            X
+          </button>
+          <p>Type: {this.props.type}</p>
+          <p>Material: {this.props.material}</p>
+          <p>Color: {this.props.color}</p>
+          <p>Occasion: {this.props.occasion}</p>
+          <p>Brand: {this.props.brand}</p>
+        </div>
       </div>
     );
   }
