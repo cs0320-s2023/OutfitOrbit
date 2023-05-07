@@ -147,10 +147,6 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     );
     console.log("Data saved to Firestore:", name, email, wardrobe);
   } else {
-<<<<<<< HEAD
-    console.log(querySnapshot)
-    console.log("User already exists in Firestore:", email);
-=======
     const docRef = querySnapshot.docs[0].ref;
     if (wardrobe && wardrobe.length > 0) {
       const wardrobeData = wardrobeConverter.toFirestore({
@@ -162,7 +158,6 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     } else {
       console.log("Wardrobe is empty or undefined, skipping update to Firestore");
     }
->>>>>>> 72a45d7b6367d6b00fa8e349b60347323b1a61fe
   }
 }
 
@@ -216,10 +211,9 @@ export async function readFromDB(collectionName, field, value) {
   }
 }
 
-<<<<<<< HEAD
-=======
   export function wardrobeToString(clothingArray) {
     const clothingObjects = clothingArray.map((item) => item.toJSON());
     return JSON.stringify(clothingObjects);
   }
->>>>>>> 72a45d7b6367d6b00fa8e349b60347323b1a61fe
+
+

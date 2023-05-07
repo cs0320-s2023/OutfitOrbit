@@ -3,8 +3,9 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, collection, getDocs, Firestore } from 'firebase/firestore';
 import { doc, setDoc, addDoc, query, where} from "firebase/firestore"; 
-import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "../backend/private/firebase.js"
+import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from "../backend/private/firebase.tsx"
 import { Clothing } from "../backend/Clothing.js";
+import { WardrobeDB, createWardrobeDB } from "../backend/firebase.js";
 
 describe("Firebase Utils", () => {
   let firebaseApp, auth, db;
@@ -38,10 +39,10 @@ describe("Firebase Utils", () => {
       const wardrobe = [new Clothing("shirt", "color", "cotton", "casual", "zara")];
       
       // add user to Firestore database
-      await createWardrobeDB(name, email, wardrobe); //tentative, how do we create our wardrobes -anastasio
+      await createWardrobeDB(name, email, wardrobe);
       
       // check that user was added to Firestore database
-      const wardrobeCollectionRef = collection(db, "wardrobeDB");git
+      const wardrobeCollectionRef = collection(db, "wardrobeDB");
       const querySnapshot = await getDocs(query(wardrobeCollectionRef, where("email", "==", email)));
       expect(querySnapshot.docs.length).toEqual(1);
       expect(querySnapshot.docs[0].data()).toEqual(new WardrobeDB(name, email, wardrobe));
