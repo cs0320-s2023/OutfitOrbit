@@ -74,6 +74,7 @@ class BlogCard extends React.Component {
           occasion={this.props.occasion}
           brand={this.props.brand}
           onClose={this.props.onClose}
+          className="card-back"
         />
       </div>
     );
@@ -86,8 +87,10 @@ This function models the front of the card
 class Front extends React.Component {
   render() {
     return (
-      <div className="front" aria-label={"This is the front of a card"}>
-        <MainArea name={this.props.name} />
+      <div className="front">
+        <div class="inner-container">
+          <MainArea name={this.props.name} />
+        </div>
       </div>
     );
   }
@@ -99,15 +102,17 @@ This function models the back of the card
 class Back extends React.Component {
   render() {
     return (
-      <div className="back" aria-label={"This is the back of a card"}>
-        <button onClick={this.props.onClose} className="close-button">
-          X
-        </button>
-        <p>Type: {this.props.type}</p>
-        <p>Material: {this.props.material}</p>
-        <p>Color: {this.props.color}</p>
-        <p>Occasion: {this.props.occasion}</p>
-        <p>Brand: {this.props.brand}</p>
+      <div className="back">
+        <div class="inner-container">
+          <button onClick={this.props.onClose} className="close-button">
+            X
+          </button>
+          <p>Type: {this.props.type}</p>
+          <p>Material: {this.props.material}</p>
+          <p>Color: {this.props.color}</p>
+          <p>Occasion: {this.props.occasion}</p>
+          <p>Brand: {this.props.brand}</p>
+        </div>
       </div>
     );
   }

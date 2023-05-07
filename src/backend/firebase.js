@@ -55,11 +55,12 @@ export const signInWithGoogle = () => {signInWithPopup(auth, provider)
       new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]);
       
       //sets the user information in the firebase database
-      localStorage.setItem("name", userName);
-      localStorage.setItem("email", userEmail);
       localStorage.setItem("wardrobe", JSON.stringify([new Clothing("sample cloth", "shirt", "color", "cotton", "casual", "zara"),
       new Clothing("sample cloth 2", "shirt", "color", "cotton", "casual", "zara")]))
     };
+    
+    localStorage.setItem("name", userName);
+    localStorage.setItem("email", userEmail);
 
   }).catch((error) => {
     console.log(error)

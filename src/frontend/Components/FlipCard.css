@@ -37,11 +37,14 @@ This is the css class used to style the flipcard used to display genertaed outfi
     display: block;
     perspective: 1000px;
     margin-bottom: 3rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
   }
   
   body #root .card-container {
     height: 180px;
-    margin: 0;
+    margin-left: 2rem;
+    margin-right: 2rem;
     padding: 0;
     top: 20px;
     width: 175px;
@@ -113,6 +116,13 @@ This is the css class used to style the flipcard used to display genertaed outfi
     transform: rotateY(-180deg);
     /* back tile styles go here! */
   }
+
+  body #root .page-container .card-container .front .inner-container,
+  body #root .page-container .card-container .back .inner-container {
+  max-height: calc(100% + 5px); /* adjust the value 20px based on your padding */
+  overflow: scroll;
+  padding: 10px; /* adjust the padding as needed */
+}
   
   body #root p {
     margin: 0.2rem;
@@ -131,11 +141,5 @@ This is the css class used to style the flipcard used to display genertaed outfi
     font-size: 12px;
     color: var(--navy-blue);
     background-color: var(--navbar-color);
-  }
-
-  body #root .card-container p {
-    max-height: 100%; /* adjust this value if needed */
-    overflow: auto;
-    padding-right: 4px;
   }
     
