@@ -36,7 +36,7 @@ function OldRound({ guess }) {
   // console.log("result is" + data);
   return (
     <div className={"old outfit"} aria-label={"this is where your old outfit will show"}>
-      <p>{guess}</p>
+      {/* <p>{guess}</p> */}
     </div>
   );
 }

@@ -10,6 +10,7 @@ the searchbar for user queries
 
   .searchBar{
     display: flex;
+    margin-top: 3rem;
   }
   .Bar fieldset{
     background: #E9E9E9;
