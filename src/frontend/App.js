@@ -1,3 +1,8 @@
+/**
+ * This is the App class, that contains the main frontend components of the program. This includes the navbar, the 
+ * searchbar, the Add To Closet form, and the cards to display clothing items and outfits among other components
+ */
+
 import Navbar from "./Components/Navbar";
 import Main from "../backend/Main";
 import { useState, useEffect } from "react";
@@ -79,6 +84,10 @@ function App() {
     }
   }
 
+  /*
+  This function generates cards to display clothing items when they are added to the wardrobe, or when a new outfit is
+  generated
+  */
   async function generateCard(userWardrobe, setCards) {
     return new Promise(async (resolve) => {
       if (isSignedIn) {
@@ -101,6 +110,7 @@ function App() {
     });
   }
 
+  //generates a card for each clothing item when displaying the user's wardrobe
   useEffect(() => {
     const generateCardAsync = async () => {
       let userWardrobe = await getWardrobe();
@@ -112,6 +122,7 @@ function App() {
     }
   }, [isSignedIn, wardrobe]);
 
+  //generates a card to display the newly generated outfit
   useEffect(() => {
     const generateCardAsync = async () => {
       let JSONWardrobe = JSON.parse(GPTresponse);
@@ -138,6 +149,10 @@ function App() {
     setResult(matches);
   }
 
+  /*
+  This function creates a Cllthing object using the field entered by the user, and then passes this object into the 
+  addToWardrobe function to add to the user's wardrobe in the firestore database
+  */
   function handleSubmit(event) {
       event.preventDefault(); // prevent the form from submitting
     
@@ -182,7 +197,8 @@ function App() {
             icon={faXmark}
             className="x-mark fa-2x"
           />
-          <h2>
+          <h2 aria-label="Navigate to your digital wardrobe and select the type of outfit you
+            would like from the given options!">
             {" "}
             Navigate to your digital wardrobe and select the type of outfit you
             would like from the given options!
@@ -199,7 +215,8 @@ function App() {
           />
           <div className="row">
             <div className="column">
-              <h2>
+              <h2 aria-label=" We are Outfit Orbit. Comitted to helping the environment by
+                taking your outfits to the next level.">
                 We are Outfit Orbit. Comitted to helping the environment by
                 taking your outfits to the next level.
               </h2>
@@ -207,7 +224,7 @@ function App() {
           </div>
         </Popup>
         <Popup trigger={addVisibility}>
-          <h1 className="instructions-title">Add Clothing to your Closet!</h1>
+          <h1 className="instructions-title" aria-label="Add Clothing to your Closet!">Add Clothing to your Closet!</h1>
           <FontAwesomeIcon
             onClick={() => {
               setAddVisibility(false);
@@ -215,6 +232,7 @@ function App() {
             icon={faXmark}
             className="x-mark fa-2x"
           />
+          {/* Form used to submit a new clothing item to the user's wardrobe */}
           <div className="row">
             <div className="column">
               <form onSubmit={handleSubmit}>
@@ -230,8 +248,6 @@ function App() {
                   <input
                     type="text"
                     name="brand"
-                    // value={state.email}
-                    // onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-control">
@@ -240,8 +256,6 @@ function App() {
                   <input
                     type="text"
                     name="type"
-                    // value={state.password}
-                    // onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-control">
@@ -250,8 +264,6 @@ function App() {
                   <input
                     type="text"
                     name="colour"
-                    // value={state.password}
-                    // onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-control">
@@ -260,8 +272,6 @@ function App() {
                   <input
                     type="text"
                     name="material"
-                    // value={state.password}
-                    // onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-control">
@@ -270,8 +280,6 @@ function App() {
                   <input
                     type="text"
                     name="occasion"
-                    // value={state.password}
-                    // onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-control">

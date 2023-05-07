@@ -1,3 +1,8 @@
+/**
+This is the css file for the Main class. It is used to style the main components of the frontend, such as the Navbar, and
+the searchbar for user queries
+*/
+
 * {
     box-sizing: border-box;
     font-family: 'Permanent Marker', cursive;
@@ -5,6 +10,7 @@
 
   .searchBar{
     display: flex;
+    margin-top: 3rem;
   }
   .Bar fieldset{
     background: #E9E9E9;

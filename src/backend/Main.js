@@ -1,10 +1,14 @@
+/**
+ * This is the Main class, that creates the overall layout of the frontend of the program. It codes
+ */
+
 import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import Gpt3 from "./Gpt3.js";
 import "./Main.css";
 import { jsonToClothingArray } from "./Clothing.js"
 import { updatePoints } from "./firebase.js";
 
-export const TEXT_try_button_accessible_name = "try your sequence";
+export const TEXT_try_button_accessible_name = "try typing in your outfit request!";
 export const TEXT_like_button_accessible_name = "click this button if you like the outfit!";
 export const TEXT_number_1_accessible_name = "first number in sequence";
 export const TEXT_number_2_accessible_name = "second number in sequence";
@@ -12,6 +16,9 @@ export const TEXT_number_3_accessible_name = "third number in sequence";
 export const TEXT_try_button_text = "Try it!";
 export const TEXT_like_button_text = "Like <3";
 
+/*
+This function creates the input space for the search bar where users can enter outfit descriptions/requests
+*/
 function ControlledInput({ value, setValue, ariaLabel }) {
   return (
     <input
@@ -28,24 +35,22 @@ function OldRound({ guess }) {
   // const [data, setData] = useState("");
   // console.log("result is" + data);
   return (
-    <div className={"guess-round-"} aria-label={"scary story"}>
-      <p>{guess}</p>
+    <div className={"old outfit"} aria-label={"this is where your old outfit will show"}>
+      {/* <p>{guess}</p> */}
     </div>
   );
 }
 
+/*
+This function creates the search bar for users to input outfit descriptions/requests
+*/
 function NewRound({ addGuess, searchResult }) {
   const [value0, setValue0] = useState("");
   return (
     <div className="searchBar">
       <div className="Bar">
-        {/* This is a comment within the JSX. Notice that it's a TypeScript comment wrapped in
-          braces, so that React knows it should be interpreted as TypeScript */}
-
-        {/* I opted to use this HTML tag; you don't need to. It structures multiple input fields
-          into a single unit, which makes it easier for screenreaders to navigate. */}
         <fieldset>
-          {/* <legend>Type words to generate your scary story:</legend> */}
+          {/* <legend>Type words to generate your personalised outfit</legend> */}
           <ControlledInput
             value={value0}
             setValue={setValue0}
@@ -54,6 +59,7 @@ function NewRound({ addGuess, searchResult }) {
         </fieldset>
       </div>
 
+    {/* This is the try button used to submit the outfit generation request*/}
       <div className="Button">
         <button
           onClick={() => {
@@ -67,6 +73,7 @@ function NewRound({ addGuess, searchResult }) {
         </button>
       </div>
 
+    {/* This is the like button for users to like generated outfits*/}
       <div className="Like_Button">
         <button
           onClick={() => {
@@ -85,6 +92,9 @@ function NewRound({ addGuess, searchResult }) {
   );
 }
 
+/*
+This function creates the frontend elements needed for the main opening screen 
+*/
 export default function Main(props) {
   const [guess, setGuesses] = useState("");
   // const [data, setData] = useState("");
