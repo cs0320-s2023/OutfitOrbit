@@ -1,3 +1,9 @@
+/**
+ * This is the FlipCard class, that models the card used to display generated outfits and clothing items in a user's 
+ * wardrobe. It displays the name of the outfit or clothing item on the front, and the properties of that outfit or clothing
+ * item in the back.
+ */
+
 import React from "react";
 import { ReactDOM } from "react";
 import "./FlipCard.css";
@@ -11,6 +17,7 @@ export default class Card extends React.Component {
     };
   }
 
+  //makes the card invsible when 'closed', and deletes the clothing item it corresponds to from the database
   onClose = () => {
     console.log("closed card!")
     this.setState({ showCard: false });
@@ -36,6 +43,10 @@ export default class Card extends React.Component {
   }
 }
 
+/*
+Creates an object that can flip over when hovered over with a mouse. Displays the properties of that item on the back, 
+and the name of the item on the front.
+*/
 class BlogCard extends React.Component {
   constructor(props) {
     super(props);
@@ -70,6 +81,9 @@ class BlogCard extends React.Component {
   }
 }
 
+/*
+This function models the front of the card
+*/
 class Front extends React.Component {
   render() {
     return (
@@ -82,6 +96,9 @@ class Front extends React.Component {
   }
 }
 
+/*
+This function models the back of the card
+*/
 class Back extends React.Component {
   render() {
     return (
@@ -101,6 +118,9 @@ class Back extends React.Component {
   }
 }
 
+/*
+This function is used to model the inner element o fteh front of the cars
+*/
 class MainArea extends React.Component {
   render() {
     return (

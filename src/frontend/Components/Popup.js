@@ -1,3 +1,6 @@
+/**
+ * This class models the frontend for popups used to display information
+ */
 import React from 'react';
 import './Popup.css';
 

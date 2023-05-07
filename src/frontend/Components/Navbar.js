@@ -1,3 +1,9 @@
+/**
+ * This class creates a navigation bar elemnt on the frontend of the program. It handles displaying information about the
+ * project, how to use the website, and signing in and out of your profile. It also handles adding new items to the 
+ * wardrobes of users that have signed in
+ */
+
 import React, { useEffect, useState }from 'react';
 import ReactDOM from 'react-dom';
 import './Navbar.css'
@@ -16,6 +22,9 @@ function Navbar( props ) {
     // listen for scrolling events
     window.addEventListener("scroll", animateNavbar);
 
+    /*
+    This function calls functions from the firebase.js file to handle signing in a user using their email or Google
+    */
     function handleSignIn() {
       if (!props.isSignedIn) {
         signInWithGoogle();
@@ -26,6 +35,9 @@ function Navbar( props ) {
       } 
     }
 
+    /*
+    This function calls functions from the firebase.js file to handle signing out a user using their email or Google
+    */
     function handleSignOut() {
       if (props.isSignedIn) {
         signOutGoogle();
@@ -35,6 +47,9 @@ function Navbar( props ) {
       } 
     }
 
+    /*
+    This function animates the navigation bar to chnage colour gracefully when it is scrolled in or out of focus
+    */
     function animateNavbar() {
 
         let scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
@@ -55,6 +70,9 @@ function Navbar( props ) {
         }
     }
 
+    /*
+    The following functions handle displaying popups when the appropriate navbar elements are clicked
+    */
     function popUpInstructions() {
         props.setInstructionsVisibility(true);
     }
@@ -72,7 +90,7 @@ function Navbar( props ) {
     }
 
     return (
-      <nav className="navbar">
+      <nav className="navbar" aria-label='This is the navigation bar. Tab to discover more about us, instructions, or to sign in'>
         <div id="navbar" className="brand-title">
           Outfit Orbit
         </div>
@@ -89,25 +107,25 @@ function Navbar( props ) {
         <div className="navbar-links">
           <ul className="navbar-links-list">
             <li>
-              <a onClick={popUpInstructions}>Instructions</a>
+              <a onClick={popUpInstructions} aria-label='Learn how to use the website'>Instructions</a>
             </li>
             <li>
-              <a onClick={popUpAbout}>About</a>
+              <a onClick={popUpAbout} aria-label='Learn more about us'>About</a>
             </li>
             <li>
-              {props.isSignedIn && <a onClick={popUpAdd}>Add To Closet</a>}
+              {props.isSignedIn && <a onClick={popUpAdd} aria-label='Add an item to your closet'>Add To Closet</a>}
             </li>
             <li>
               {props.isSignedIn && (
                 <a>
-                  <button id="signOutButton" onClick={handleSignOut}>
+                  <button id="signOutButton" onClick={handleSignOut} aria-label='Sign out'>
                     Sign out
                   </button>
                 </a>
               )}
               {!props.isSignedIn && (
                 <a>
-                  <button id="signInButton" onClick={handleSignIn}>
+                  <button id="signInButton" onClick={handleSignIn} aria-label='Sign in'>
                     Sign in
                   </button>
                 </a>
