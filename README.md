@@ -7,11 +7,11 @@ We attempted to achieve this goal in order to promote sustainability in fashion 
 **Team Members**: 
 Taleena (tchandar): worked on adding Wardrobe + Clothing objects to Firestore Database, parsing the GPT output into a clothing object and displaying style recommendation 
 
-Keya (kkilacha): worked on adding new items to the Wardrobe using form, and removing from the firestore db
+Keya (kkilacha): worked on adding new items to the Wardrobe using form, and removing from the firestore db, focus on accessibility through adding aria-labels 
 
-Javier (jferna35): worked heavily with the frontend and styling elements, set up Google Authentication 
+Javier (jferna35): worked heavily with the frontend and styling elements fr the components, set up Google Authentication and the API requests. 
 
-Anastasio (aortiz18)
+Anastasio (aortiz18): completed the testing suite using mocking, added accessibility elements and elements of defensive programming, as well as organizing our code in packages. 
 
 **Repository link**: https://github.com/cs0320-s2023/OutfitOrbit.git
 
@@ -27,10 +27,17 @@ There are occassionally a few bugs with the Sign in/Sign out given that we do no
 
 ## Tests 
 
+For the firebase functions, unit testing was primarily undertaken, whereas we used integration testing for the App class. 
+
+Firebase: 
+- creating database
+- adding a user 
+- ensuring same user is not added twice
 
 ## How to: 
 
 **Run the tests**: 
+- run npm test in the terminal to run the testing suites
 
 **Build and Run Program**: 
 - Run npm start from the terminal 
