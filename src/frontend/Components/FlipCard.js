@@ -119,7 +119,7 @@ class Back extends React.Component {
 }
 
 /*
-This function is used to model the inner element o fteh front of the cars
+This function is used to model the inner element of the front of the cars
 */
 class MainArea extends React.Component {
   render() {
