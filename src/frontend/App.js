@@ -123,14 +123,24 @@ function App() {
   }, [isSignedIn, wardrobe]);
 
   //generates a card to display the newly generated outfit
-  useEffect(() => {
+  
+    useEffect(() => {
     const generateCardAsync = async () => {
+      try{
       let JSONWardrobe = JSON.parse(GPTresponse);
       await generateCard(JSONWardrobe, setRecommendation);
       await compareByName(); 
+      } catch (error){
+        console.log('JSON parsing error: Unexpected end of JSON input')
+      }
     };
+    try{
     generateCardAsync();
+    } catch (error){
+    console.log('JSON parsing error: Unexpected end of JSON input')
+    }
   }, [GPTresponse]);
+
 
   async function compareByName() {
     const matches = [];

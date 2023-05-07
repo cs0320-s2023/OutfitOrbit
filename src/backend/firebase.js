@@ -165,6 +165,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
     );
     console.log("Data saved to Firestore:", name, email, wardrobe);
   } else {
+
     console.log("User already exists:", email);
   }
 }
@@ -336,9 +337,11 @@ export async function readFromDB(collectionName, field, value) {
   }
 }
 
+
 /*
 This function converts an array of Clothing items (a wardrobe) to a JSON form
 */
+
   export function wardrobeToString(clothingArray) {
     const clothingObjects = clothingArray.map((item) => item.toJSON());
     return JSON.stringify(clothingObjects);
