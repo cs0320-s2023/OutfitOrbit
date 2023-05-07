@@ -19,7 +19,7 @@ export default async function Gpt3(email, word1) {
   const stringWardrobe = JSON.stringify(wardrobe); 
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: "Create one outfit from the following pieces of clothing which are clothing items in a JSON formatted as a string: " + stringWardrobe + 
+    prompt: "Create only one outfit from the following pieces of clothing which are clothing items in a JSON formatted as a string: " + stringWardrobe + 
     ". The outfit must be inspired by the following description: " + word1 + ". Return an" 
     + " array with objects with the fields material, occasion, color, type, brand and name in that order and in a JSON format.",
     max_tokens: 3500,

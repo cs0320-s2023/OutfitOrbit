@@ -1,26 +1,14 @@
 {
   "files": {
-    "main.css": "/OutfitOrbit/static/css/main.2db8589f.css",
-<<<<<<< HEAD
-    "main.js": "/OutfitOrbit/static/js/main.2dfd0089.js",
-    "static/media/homepage_background_2.png": "/OutfitOrbit/static/media/homepage_background_2.90a2643ee459d77c218f.png",
+    "main.css": "/OutfitOrbit/static/css/main.9bd1314e.css",
+    "main.js": "/OutfitOrbit/static/js/main.a9a50f20.js",
+    "static/media/Artboard 1.png": "/OutfitOrbit/static/media/Artboard 1.12eda94fd33edf4be1c8.png",
     "index.html": "/OutfitOrbit/index.html",
-    "main.2db8589f.css.map": "/OutfitOrbit/static/css/main.2db8589f.css.map",
-    "main.2dfd0089.js.map": "/OutfitOrbit/static/js/main.2dfd0089.js.map"
+    "main.9bd1314e.css.map": "/OutfitOrbit/static/css/main.9bd1314e.css.map",
+    "main.a9a50f20.js.map": "/OutfitOrbit/static/js/main.a9a50f20.js.map"
   },
   "entrypoints": [
-    "static/css/main.2db8589f.css",
-    "static/js/main.2dfd0089.js"
-=======
-    "main.js": "/OutfitOrbit/static/js/main.7e9b5eda.js",
-    "static/media/homepage_background_2.png": "/OutfitOrbit/static/media/homepage_background_2.90a2643ee459d77c218f.png",
-    "index.html": "/OutfitOrbit/index.html",
-    "main.2db8589f.css.map": "/OutfitOrbit/static/css/main.2db8589f.css.map",
-    "main.7e9b5eda.js.map": "/OutfitOrbit/static/js/main.7e9b5eda.js.map"
-  },
-  "entrypoints": [
-    "static/css/main.2db8589f.css",
-    "static/js/main.7e9b5eda.js"
->>>>>>> 72a45d7b6367d6b00fa8e349b60347323b1a61fe
+    "static/css/main.9bd1314e.css",
+    "static/js/main.a9a50f20.js"
   ]
 }
