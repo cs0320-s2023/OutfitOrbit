@@ -1,3 +1,8 @@
+/**
+This is the css file for the Main class. It is used to style the main components of the frontend, such as the Navbar, and
+the searchbar for user queries
+*/
+
 * {
     box-sizing: border-box;
     font-family: 'Permanent Marker', cursive;
