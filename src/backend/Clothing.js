@@ -9,7 +9,6 @@ export class Clothing {
     this.occasion = occasion; 
     this.brand = brand;
     this.points = 0; 
-    this.id = 0;
   }
 
   toJSON() {
@@ -20,7 +19,7 @@ export class Clothing {
       material: this.material,
       occasion: this.occasion,
       brand: this.brand,
-      id: this.id
+      points: this.points
     };
   }
 
@@ -31,7 +30,4 @@ export class Clothing {
   });
   }
 
-  updateID(newId) {
-    this.id = newId;
-  }
 }

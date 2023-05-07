@@ -14,7 +14,7 @@ export default async function Gpt3(email, word1) {
   const completion = await openai.createCompletion({
     model: "text-davinci-003",
     prompt: "Create an outfit using only the following pieces: " + stringWardrobe +  "with the following description: " + word1 + "return an" 
-    + "array with objects with the fields material, occasion, color, type, brand and name in that order and in a JSON format. The output should only contain ",
+    + "array with objects with the fields material, occasion, color, type, brand and name in that order and in a JSON format.",
     max_tokens: 3500,
   });
   console.log(completion.data.choices[0].text);

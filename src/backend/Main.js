@@ -2,6 +2,7 @@ import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import Gpt3 from "./Gpt3.js";
 import "./Main.css";
 import { jsonToClothingArray } from "./Clothing.js"
+import { updatePoints } from "./firebase.js";
 
 export const TEXT_try_button_accessible_name = "try your sequence";
 export const TEXT_like_button_accessible_name = "click this button if you like the outfit!";
@@ -33,7 +34,7 @@ function OldRound({ guess }) {
   );
 }
 
-function NewRound({ addGuess }) {
+function NewRound({ addGuess, searchResult }) {
   const [value0, setValue0] = useState("");
   return (
     <div className="searchBar">
@@ -69,7 +70,9 @@ function NewRound({ addGuess }) {
       <div className="Like_Button">
         <button
           onClick={() => {
-            
+            if (searchResult && searchResult.length > 0) {
+              updatePoints(searchResult);
+            }
           }}
           aria-label={TEXT_like_button_accessible_name}
         >
@@ -90,12 +93,13 @@ export default function Main(props) {
     <div className="App">
       <OldRound guess={props.GPTresponse}/>
       <NewRound
+        result = {props.searchResult}
         addGuess={(guess) => {
           Gpt3(props.currentUserEmail, guess)?.then((r) =>
             props.setResponse(r.data.choices[0].text)
           );
           setGuesses(guess); 
-        }}
+        }} 
       />
     </div>
   );

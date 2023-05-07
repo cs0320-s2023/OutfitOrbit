@@ -23,9 +23,10 @@ function App() {
   const [wardrobe, setWardrobe] = useState([]);
   const [recommendation, setRecommendation] = useState([]);
   const [GPTresponse, setResponse] = useState(""); 
+  const [searchResult, setResult] = useState([]); 
 
   // images
-  const backgroundImg = require("../frontend/media/homepage_background_2.png");
+  const backgroundImg = require("../frontend/media/Artboard 1.png");
   const backgroundImgElem = document.getElementsByTagName("img"); // returns a collection
 
   // Handling image animation against mouse
@@ -85,7 +86,6 @@ function App() {
         let cards = userWardrobe.map((clothing) => {
           return (
             <Card
-              key={clothing.id}
               name={clothing.name}
               type={clothing.type}
               color={clothing.color}
@@ -116,22 +116,26 @@ function App() {
     const generateCardAsync = async () => {
       let JSONWardrobe = JSON.parse(GPTresponse);
       await generateCard(JSONWardrobe, setRecommendation);
+      await compareByName(); 
     };
     generateCardAsync();
   }, [GPTresponse]);
 
-  function compareByName() {
+  async function compareByName() {
     const matches = [];
     recommendation.forEach((recommendedItem) => {
+      console.log(recommendedItem); 
       const match = wardrobe.find((wardrobeItem) => {
-        return recommendedItem.name === wardrobeItem.name;
+        return (
+          recommendedItem.props.name.toLowerCase() === wardrobeItem.props.name.toLowerCase());
       });
 
       if (match) {
-        matches.push(match);
+        matches.push(match.props);
       }
     });
-    return matches;
+    console.log(matches); 
+    setResult(matches);
   }
 
   function handleSubmit(event) {
@@ -286,7 +290,7 @@ function App() {
           setCurrentUserEmail={setCurrentUserEmail}
           GPTresponse={GPTresponse}
           setResponse={setResponse}
-          compareByName={compareByName}
+          searchResult={searchResult}
         />
       </div>
       {isSignedIn && GPTresponse && (

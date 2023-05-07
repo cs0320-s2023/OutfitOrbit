@@ -192,6 +192,7 @@ export async function addToWardrobe(item) {
 }
 
 export async function updatePoints(item) {
+  console.log("updated pts"); 
   const name = localStorage.getItem("name");
   const email = localStorage.getItem("email");
 
@@ -211,6 +212,8 @@ export async function updatePoints(item) {
   const items = wardrobeData.items;
 
   const matchingIndex = items.findIndex((i) => i.itemName === item.itemName);
+
+  console.log(matchingIndex); 
 
   if (matchingIndex === -1) {
     console.error(
