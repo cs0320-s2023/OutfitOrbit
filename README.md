@@ -10,3 +10,10 @@ Javier (jferna35)
 Anastasio (aortiz18)
 
 **Repository link**: https://github.com/cs0320-s2023/OutfitOrbit.git
+
+### Design Choices 
+
+**Frontend**: Our frontend was composed of 3 main components: the Flipcard, the Navbar and the PopUp. These were created into their own classes with css. Our App class, the biggest class of our program, incorporated all these stylized elements while ensuring that all changes made on the backend to the database were reflected and rendered in the frontend. For instance, adding or removing clothing items from the Database was first done in the backend, and then any such changes were recorded using dependencies to ensure that the App would be correctly rendered. 
+
+**Backend**: One of the core classes of the backend was 'firebase.js'
+
