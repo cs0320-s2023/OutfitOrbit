@@ -1,5 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800");
+/**
+This is the css file used to style the popups used to display information about OutfitOrbit
+*/
 
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800");
 
 :root { 
     --navbar-height: 58px;
