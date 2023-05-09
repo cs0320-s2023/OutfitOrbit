@@ -174,10 +174,12 @@ function App() {
       const occasion = event.target.elements.occasion.value;
       const brand = event.target.elements.brand.value;
       const name = event.target.elements.name.value;
-    
+      
       // create a new Clothing item with the fields provided
       const newItem = new Clothing(name, type, colour, material, occasion, brand);
       addToWardrobe(newItem);
+      
+      setAddVisibility(false);
   }
 
   return (

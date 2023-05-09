@@ -174,12 +174,7 @@ export async function createWardrobeDB(name, email, wardrobe = []) {
 This fucntion is used to add clothing items to an existing wardrobe. It is called when the Add to Closet form is filled.
 */
 export async function addToWardrobe(item) {
-  console.log("ITEM TO ADD")
-  console.log(item)
   const itemToAdd = item.toJSON();
-
-  console.log("ITEM TO ADD TO JSON");
-  console.log(itemToAdd);
   
   // Update the wardrobe in the localStorage
   const name = localStorage.getItem("name");
@@ -228,11 +223,11 @@ export async function updatePoints(item) {
   if (wardrobeSnapshot.empty) {
     console.error(`Wardrobe not found for user with email ${email}`);
     return;
-  }
+  } 
 
-  const wardrobeDoc = wardrobeSnapshot.docs[0];
-  const wardrobeData = wardrobeDoc.data();
-  const wardrobeId = wardrobeDoc.id;
+  const wardrobeDocRef = wardrobeSnapshot.docs[0].ref;
+  const wardrobeData = wardrobeDocRef.data();
+  const wardrobeId = wardrobeDocRef.id;
   const items = wardrobeData.items;
 
   //looks for item in the user's wardrobe
